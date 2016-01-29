@@ -5,6 +5,10 @@ Draw a box on a map or geocode search to query features inside it. __Note:__
 This requires your account to have access to Surface API. learn more & request
 access here: https://www.mapbox.com/blog/introducing-the-surface-api/
 
+![demo](http://i.imgur.com/pqBgJWI.gif)
+
+__Demo:__ https://www.mapbox.com/analysis-demos/census/
+
 ### Installing
 
     npm install

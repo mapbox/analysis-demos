@@ -3,7 +3,9 @@ Street trees in Manhattan
 
 Draw a shape on a map to query features inside it.
 
-__Demo:__ https://www.mapbox.com/bites/00213/
+![demo](http://i.imgur.com/A3gj4Qo.gif)
+
+__Demo:__ https://www.mapbox.com/analysis-demos/trees/
 
 ### Installing
 
