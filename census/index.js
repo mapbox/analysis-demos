@@ -98,7 +98,7 @@ function emitError(msg) {
 }
 
 function loading(state) {
-  document.getElementById('results').classList.toggle('loading', state);
+  document.getElementById('sidebar').classList.toggle('loading', state);
 }
 
 function initialize() {
@@ -228,6 +228,7 @@ function drawHexGrid(bbox) {
 }
 
 function renderSummary(population, income) {
+  $results.parentNode.classList.remove('hidden');
   $results.innerHTML = resultTemplate({
     medianPop: median(population).toLocaleString(),
     medianIncome: median(income).toLocaleString()

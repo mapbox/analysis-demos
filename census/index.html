@@ -16,7 +16,7 @@
 <div id='map' class='map'></div>
 
 <div class='pin-topleft pad1 sidebar-panel z10'>
-  <div class='fill-white round lifted contain'>
+  <div id='sidebar' class='fill-white round lifted contain'>
     <div class='pad2 contain'>
       <h3 class='block space-bottom1'>Population &amp; median income <br />by county</h3>
       <div class='prose quiet'>
@@ -24,14 +24,14 @@
         <div id='geocoder' class='geocoder'></div>
       </div>
     </div>
-    <div class='fill-navy-dark round-bottom small dark z10 pad1x'>
-      <div id='results'></div>
-      <fieldset id='hex-size' class='dark pad1 hidden'>
+    <div class='fill-navy-dark round-bottom small dark z10 pad2 hidden'>
+      <div id='results' class='space-bottom1'></div>
+      <fieldset id='hex-size' class='dark hidden'>
         <label class='quiet small strong block'>Hex size: <span id='hex-value' class='highlight'></span></label>
         <input class='col12' type='range' value='0' min='10' max='100' step='1'>
       </fieldset>
     </div>
-  <div id='error' class='strong small pin-bottom col12 offcanvas-bottom fill-orange animate dark quiet z1 round-bottom'></div>
+    <div id='error' class='strong small pin-bottom col12 offcanvas-bottom fill-orange animate dark quiet z1 round-bottom'></div>
   </div>
 </div>
 
