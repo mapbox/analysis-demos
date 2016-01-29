@@ -1,0 +1,597 @@
+[
+  {
+    "code": "AC",
+    "name": "MAPLE, OTHER",
+    "scientific_name": "ACER SPECIES"
+  },
+  {
+    "code": "ACCA",
+    "name": "MAPLE, HEDGE",
+    "scientific_name": "ACER CAMPESTRE"
+  },
+  {
+    "code": "ACGI",
+    "name": "MAPLE, AMUR",
+    "scientific_name": "ACER GINNALA"
+  },
+  {
+    "code": "ACNE",
+    "name": "BOXELDER",
+    "scientific_name": "ACER NEGUNDO"
+  },
+  {
+    "code": "ACPA",
+    "name": "MAPLE, JAPANESE",
+    "scientific_name": "ACER PALMATUM"
+  },
+  {
+    "code": "ACPL",
+    "name": "MAPLE, NORWAY",
+    "scientific_name": "ACER PLATANOIDES"
+  },
+  {
+    "code": "ACPLCR",
+    "name": "MAPLE, NORWAY-CR KNG",
+    "scientific_name": "PLATANOIDES ACER CRIMSON KING"
+  },
+  {
+    "code": "ACPS",
+    "name": "MAPLE, SYCAMORE",
+    "scientific_name": "ACER PSEUDOPLATANUS"
+  },
+  {
+    "code": "ACRU",
+    "name": "MAPLE, RED",
+    "scientific_name": "ACER RUBRUM"
+  },
+  {
+    "code": "ACSA1",
+    "name": "MAPLE, SILVER",
+    "scientific_name": "ACER SACCHARINUM"
+  },
+  {
+    "code": "ACSA2",
+    "name": "MAPLE, SUGAR",
+    "scientific_name": "ACER SACCHARUM"
+  },
+  {
+    "code": "AECA",
+    "name": "HORSECHESTNUT, RED",
+    "scientific_name": "AESCULUS X CARNEA"
+  },
+  {
+    "code": "AEHI",
+    "name": "HORSECHESTNUT",
+    "scientific_name": "AESCULUS HIPPOCASTANUM"
+  },
+  {
+    "code": "AIAL",
+    "name": "TREE OF HEAVEN",
+    "scientific_name": "AILANTHUS ALTISSIMA"
+  },
+  {
+    "code": "ALGL",
+    "name": "ALDER, EUROPEAN",
+    "scientific_name": "ALNUS GLUTINOSA"
+  },
+  {
+    "code": "AM",
+    "name": "SERVICEBERRY, OTHER",
+    "scientific_name": "AMELANCHIER SPECIES"
+  },
+  {
+    "code": "BE",
+    "name": "BIRCH, OTHER",
+    "scientific_name": "BETULA SPECIES"
+  },
+  {
+    "code": "CABE",
+    "name": "HORNBEAM, EUROPEAN",
+    "scientific_name": "CARPINUS BETULUS"
+  },
+  {
+    "code": "CA",
+    "name": "CATALPA",
+    "scientific_name": "CATALPA"
+  },
+  {
+    "code": "CACA",
+    "name": "HORNBEAM, AMERICAN",
+    "scientific_name": "CARPINUS CAROLINIANA"
+  },
+  {
+    "code": "CA",
+    "name": "HICKORY",
+    "scientific_name": "CARYA"
+  },
+  {
+    "code": "CEAT",
+    "name": "CEDAR, ATLAS",
+    "scientific_name": "CEDRUS ATLANTICA"
+  },
+  {
+    "code": "CECA",
+    "name": "REDBUD, EASTERN",
+    "scientific_name": "CERCIS CANADENSIS"
+  },
+  {
+    "code": "CEJA",
+    "name": "KATSURA TREE",
+    "scientific_name": "CERCIDIPHYLLUM JAPONICUM"
+  },
+  {
+    "code": "CEOC",
+    "name": "HACKBERRY",
+    "scientific_name": "CELTIS OCCIDENTALIS"
+  },
+  {
+    "code": "CHVI",
+    "name": "FRINGE TREE",
+    "scientific_name": "CHIONANTHUS VIRGINICUS"
+  },
+  {
+    "code": "CLLU",
+    "name": "YELLOWOOD",
+    "scientific_name": "CLADRASTIS LUTEA"
+  },
+  {
+    "code": "COCO2",
+    "name": "TURKISH HAZELNUT",
+    "scientific_name": "CORYLUS COLURNA"
+  },
+  {
+    "code": "COFL",
+    "name": "DOGWOOD, FLOWERING",
+    "scientific_name": "CORNUS FLORIDA"
+  },
+  {
+    "code": "COKO",
+    "name": "DOGWOOD, KOUSA",
+    "scientific_name": "CORNUS KOUSA"
+  },
+  {
+    "code": "COMA",
+    "name": "CHERRY, CORNELIAN",
+    "scientific_name": "CORNUS MAS"
+  },
+  {
+    "code": "CR",
+    "name": "HAWTHORN, OTHER",
+    "scientific_name": "CRATAEGUS SPECIES"
+  },
+  {
+    "code": "DIVI",
+    "name": "PERSIMMON, COMMON",
+    "scientific_name": "DIOSPYROS VIRGINIANA"
+  },
+  {
+    "code": "EUUL",
+    "name": "HARDY RUBBER TREE",
+    "scientific_name": "EUCOMMIA ULMOIDES"
+  },
+  {
+    "code": "FAGR",
+    "name": "BEECH, AMERICAN",
+    "scientific_name": "FAGUS GRANDIFOLIA"
+  },
+  {
+    "code": "FASY",
+    "name": "BEECH, EUROPEAN",
+    "scientific_name": "FAGUS SYLVATICA"
+  },
+  {
+    "code": "FR",
+    "name": "ASH, OTHER",
+    "scientific_name": "FRAXINUS SPECIES"
+  },
+  {
+    "code": "FRAM",
+    "name": "ASH, WHITE",
+    "scientific_name": "FRAXINUS AMERICANA"
+  },
+  {
+    "code": "FRPE",
+    "name": "ASH, GREEN",
+    "scientific_name": "FRAXINUS PENNSYLVANICA"
+  },
+  {
+    "code": "GIBI",
+    "name": "GINKGO",
+    "scientific_name": "GINKGO BILOBA"
+  },
+  {
+    "code": "GLTR",
+    "name": "HONEYLOCUST",
+    "scientific_name": "GLEDITSIA TRIACANTHOS"
+  },
+  {
+    "code": "GYDI",
+    "name": "KENTUCKY COFFEETREE",
+    "scientific_name": "GYMNOCLADUS DIOICUS"
+  },
+  {
+    "code": "HADI",
+    "name": "SILVERBELL",
+    "scientific_name": "HALESIA DIPTERA"
+  },
+  {
+    "code": "HAVI",
+    "name": "WITCH HAZEL",
+    "scientific_name": "HAMAMELIS VIRGINIANA"
+  },
+  {
+    "code": "ILSP",
+    "name": "HOLLY SPECIES",
+    "scientific_name": "ILEX SPECIES"
+  },
+  {
+    "code": "JUNI",
+    "name": "WALNUT, BLACK",
+    "scientific_name": "JUGLANS NIGRA"
+  },
+  {
+    "code": "JUVI",
+    "name": "EASTERN REDCEDAR",
+    "scientific_name": "JUNIPERUS VIRGINIANA"
+  },
+  {
+    "code": "KOPA",
+    "name": "GOLDENRAIN TREE",
+    "scientific_name": "KOELREUTERIA PANICULATA"
+  },
+  {
+    "code": "LA",
+    "name": "LARCH",
+    "scientific_name": "LARIX"
+  },
+  {
+    "code": "LAWA",
+    "name": "GOLDEN-CHAIN TREE",
+    "scientific_name": "LABURNUM WATERERI"
+  },
+  {
+    "code": "LIST",
+    "name": "SWEETGUM",
+    "scientific_name": "LIQUIDAMBAR STYRACIFLUA"
+  },
+  {
+    "code": "LITU",
+    "name": "TULIP TREE",
+    "scientific_name": "LIRIODENDRON TULIPIFERA"
+  },
+  {
+    "code": "MA1",
+    "name": "MAGNOLIA, OTHER",
+    "scientific_name": "MAGNOLIA SPECIES"
+  },
+  {
+    "code": "MA2",
+    "name": "CRABAPPLE",
+    "scientific_name": "MALUS SPECIES"
+  },
+  {
+    "code": "MAAC",
+    "name": "CUCUMBER TREE",
+    "scientific_name": "MAGNOLIA ACUMINATA"
+  },
+  {
+    "code": "MAAM",
+    "name": "MAACKIA,AMUR",
+    "scientific_name": "MAACKIA AMURENSIS"
+  },
+  {
+    "code": "MAGR",
+    "name": "MAGNOLIA, SOUTHERN",
+    "scientific_name": "MAGNOLIA GRANDIFLORA"
+  },
+  {
+    "code": "MAPO",
+    "name": "OSAGE-ORANGE",
+    "scientific_name": "MACLURA POMIFERA"
+  },
+  {
+    "code": "MAPU",
+    "name": "APPLE",
+    "scientific_name": "MALUS PUMILA"
+  },
+  {
+    "code": "MEGL",
+    "name": "DAWN REDWOOD",
+    "scientific_name": "METASEQUOIA GLYPTOSTROBOIDES"
+  },
+  {
+    "code": "MO",
+    "name": "MULBERRY",
+    "scientific_name": "MORUS"
+  },
+  {
+    "code": "NYSY",
+    "name": "BLACKGUM",
+    "scientific_name": "NYSSA SYLVATICA"
+  },
+  {
+    "code": "OSVI",
+    "name": "EASTERN HOP HORNBEAM",
+    "scientific_name": "OSTRYA VIRGINIANA"
+  },
+  {
+    "code": "OXAR",
+    "name": "SOURWOOD",
+    "scientific_name": "OXYDENDRUM ARBOREUM"
+  },
+  {
+    "code": "PATO",
+    "name": "ROYAL PAULOWNIA",
+    "scientific_name": "PAULOWNIA TOMENTOSA"
+  },
+  {
+    "code": "PHAM",
+    "name": "AMUR CORKTREE",
+    "scientific_name": "PHELLODENDRON AMURENSE"
+  },
+  {
+    "code": "PI1",
+    "name": "SPRUCE, OTHER",
+    "scientific_name": "PICEA SPECIES"
+  },
+  {
+    "code": "PI2",
+    "name": "PINE, OTHER",
+    "scientific_name": "PINUS SPECIES"
+  },
+  {
+    "code": "PIAB",
+    "name": "SPRUCE, NORWAY",
+    "scientific_name": "PICEA ABIES"
+  },
+  {
+    "code": "PINI",
+    "name": "PINE, AUSTRIAN",
+    "scientific_name": "PINUS NIGRA"
+  },
+  {
+    "code": "PIPU",
+    "name": "SPRUCE, COLORADO",
+    "scientific_name": "PICEA PUNGENS"
+  },
+  {
+    "code": "PIRE",
+    "name": "PINE, RED",
+    "scientific_name": "PINUS RESINOSA"
+  },
+  {
+    "code": "PIRI",
+    "name": "PINE, PITCH",
+    "scientific_name": "PINUS RIGIDA"
+  },
+  {
+    "code": "PIST",
+    "name": "PINE, EASTERN WHITE",
+    "scientific_name": "PINUS STROBUS"
+  },
+  {
+    "code": "PISY",
+    "name": "PINE, SCOTCH",
+    "scientific_name": "PINUS SYLVESTRIS"
+  },
+  {
+    "code": "PITH",
+    "name": "PINE, JAPANESE BLACK",
+    "scientific_name": "PINUS THUNBERGII"
+  },
+  {
+    "code": "PLAC",
+    "name": "LONDON PLANETREE",
+    "scientific_name": "PLATANUS ACERIFOLIA"
+  },
+  {
+    "code": "PO",
+    "name": "POPLAR, OTHER",
+    "scientific_name": "POPLAR SPECIES"
+  },
+  {
+    "code": "PODE",
+    "name": "COTTONWOOD, EASTERN",
+    "scientific_name": "POPULUS DELTOIDES"
+  },
+  {
+    "code": "PONI",
+    "name": "POPLAR, LOMBARDY",
+    "scientific_name": "POPULUS NIGRA"
+  },
+  {
+    "code": "PR",
+    "name": "CHERRY, OTHER",
+    "scientific_name": "PRUNUS SPECIES"
+  },
+  {
+    "code": "PRCE",
+    "name": "PLUM, PURPLELEAF",
+    "scientific_name": "PRUNUS CERASIFERA"
+  },
+  {
+    "code": "PRSE1",
+    "name": "CHERRY, BLACK",
+    "scientific_name": "PRUNUS SEROTINA"
+  },
+  {
+    "code": "PRSE2",
+    "name": "CHERRY, KWANZAN",
+    "scientific_name": "SERRULATA PRUNUS KWANZAN"
+  },
+  {
+    "code": "PRVISH",
+    "name": "CHOKECHERRY, SHUBERT",
+    "scientific_name": "VIRGINIANA PRUNUS SHUBERT"
+  },
+  {
+    "code": "PYCA",
+    "name": "PEAR, CALLERY",
+    "scientific_name": "PYRUS CALLERYANA"
+  },
+  {
+    "code": "PZME",
+    "name": "DOUGLAS FIR",
+    "scientific_name": "PSEUDOTSUGA MENZIESII"
+  },
+  {
+    "code": "QU",
+    "name": "OAK, OTHER",
+    "scientific_name": "QUERCUS SPECIES"
+  },
+  {
+    "code": "QUAC",
+    "name": "OAK, SAWTOOTH",
+    "scientific_name": "QUERCUS ACUTISSIMA"
+  },
+  {
+    "code": "QUAL",
+    "name": "OAK, WHITE",
+    "scientific_name": "QUERCUS ALBA"
+  },
+  {
+    "code": "QUBI",
+    "name": "OAK, SWAMP WHITE",
+    "scientific_name": "QUERCUS BICOLOR"
+  },
+  {
+    "code": "QUCO",
+    "name": "OAK, SCARLET",
+    "scientific_name": "QUERCUS COCCINEA"
+  },
+  {
+    "code": "QUIM",
+    "name": "OAK, SHINGLE",
+    "scientific_name": "QUERCUS IMBRICARIA"
+  },
+  {
+    "code": "QULA1",
+    "name": "OAK, TURKEY",
+    "scientific_name": "QUERCUS LAEVIS"
+  },
+  {
+    "code": "QULA2",
+    "name": "OAK, LAUREL",
+    "scientific_name": "QUERCUS LAURIFOLIA"
+  },
+  {
+    "code": "QUMA1",
+    "name": "OAK, BUR",
+    "scientific_name": "QUERCUS MACROCARPA"
+  },
+  {
+    "code": "QUPA",
+    "name": "OAK, PIN",
+    "scientific_name": "QUERCUS PALUSTRIS"
+  },
+  {
+    "code": "QUPH",
+    "name": "OAK, WILLOW",
+    "scientific_name": "QUERCUS PHELLOS"
+  },
+  {
+    "code": "QURO",
+    "name": "OAK, ENGLISH",
+    "scientific_name": "QUERCUS ROBUR"
+  },
+  {
+    "code": "QURU",
+    "name": "OAK, NORTHERN RED",
+    "scientific_name": "QUERCUS RUBRA"
+  },
+  {
+    "code": "ROPS",
+    "name": "BLACK LOCUST",
+    "scientific_name": "ROBINIA PSEUDOACACIA"
+  },
+  {
+    "code": "SA",
+    "name": "WILLOW SPECIES",
+    "scientific_name": "SALIX SPECIES"
+  },
+  {
+    "code": "SAAL",
+    "name": "SASSAFRAS",
+    "scientific_name": "SASSAFRAS ALBIDUM"
+  },
+  {
+    "code": "SOAL",
+    "name": "MOUNTAINASH, KOREAN",
+    "scientific_name": "SORBUS ALNIFOLIA"
+  },
+  {
+    "code": "STJA1",
+    "name": "SNOWBELL, JAPANESE",
+    "scientific_name": "STYRAX JAPONICA"
+  },
+  {
+    "code": "STJA2",
+    "name": "JAPANESE PAGODA TREE",
+    "scientific_name": "STYPHNOLOBIUM JAPONICUM"
+  },
+  {
+    "code": "SYRE",
+    "name": "JAPANESE TREE LILAC",
+    "scientific_name": "SYRINGA RETICULATA"
+  },
+  {
+    "code": "TADI",
+    "name": "BALDCYPRESS",
+    "scientific_name": "TAXODIUM DISTICHUM"
+  },
+  {
+    "code": "TI",
+    "name": "LINDEN, OTHER",
+    "scientific_name": "TILIA SPECIES"
+  },
+  {
+    "code": "TIAM",
+    "name": "LINDEN, AMERICAN",
+    "scientific_name": "TILIA SPECIES"
+  },
+  {
+    "code": "TICO",
+    "name": "LINDEN, LITTLE LEAF",
+    "scientific_name": "TILIA CORDATA"
+  },
+  {
+    "code": "TITO",
+    "name": "LINDEN, SILVER",
+    "scientific_name": "TILIA TOMENTOSA"
+  },
+  {
+    "code": "TSCA",
+    "name": "HEMLOCK, EASTERN",
+    "scientific_name": "TSUGA CANADENSIS"
+  },
+  {
+    "code": "UL",
+    "name": "ELM, OTHER",
+    "scientific_name": "ULMUS SPECIES"
+  },
+  {
+    "code": "ULAM",
+    "name": "ELM, AMERICAN",
+    "scientific_name": "ULMUS AMERICANA"
+  },
+  {
+    "code": "ULPA",
+    "name": "ELM, CHINESE",
+    "scientific_name": "ULMUS PARVIFOLIA"
+  },
+  {
+    "code": "ULPR",
+    "name": "ELM, ENGLISH",
+    "scientific_name": "ULMUS PROCERA"
+  },
+  {
+    "code": "ULPU",
+    "name": "ELM, SIBERIAN",
+    "scientific_name": "ULMUS PUMILA"
+  },
+  {
+    "code": "ZESE",
+    "name": "ZELKOVA, JAPANESE",
+    "scientific_name": "ZELKOVA SERRATA"
+  }
+]

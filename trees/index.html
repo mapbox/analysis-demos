@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Street trees in Manhattan</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v0.12.2/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v0.12.2/mapbox-gl.css' rel='stylesheet' />
+  <link href='site.css' rel='stylesheet' />
+</head>
+<body class='unlimiter loading clip'>
+
+<canvas id='canvas' class='contain z1 hidden'></canvas>
+<div id='map' class='map'></div>
+
+<div class='pin-topleft pad1 sidebar-panel z10'>
+  <div class='fill-white round-top pad2 lifted'>
+    <h3 class='block space-bottom1'>Street trees in Manhattan</h3>
+    <div class='prose quiet'>
+      <p>Select the pencil tool and draw a shape on the map to query trees within it.</p>
+    </div>
+  </div>
+  <div id='aggregates' class='fill-navy-dark round-bottom pad2 small dark'></div>
+</div>
+
+<div class='pin-topright pad1 z10'>
+  <div id='draw-controls' class='fill-navy dark round draw-controls'></div>
+</div>
+
+<div class='pin-bottomleft z1 mb-watermark pad1'>
+  <a target='_blank' href='https://wwww.mapbox.com/'><img src='mb.svg' alt='Mapbox' /></a>
+</div>
+
+<script src='bundle.js'></script>
+</body>
+</html>

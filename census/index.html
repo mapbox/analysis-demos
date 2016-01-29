@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Population & median income by county</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v0.12.2/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v0.12.2/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v0.1.0/mapbox-gl-geocoder.js'></script>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v0.1.0/mapbox-gl-geocoder.css' type='text/css' />
+  <link href='site.css' rel='stylesheet' />
+</head>
+<body class='unlimiter loading clip'>
+
+<div id='map' class='map'></div>
+
+<div class='pin-topleft pad1 sidebar-panel z10'>
+  <div class='fill-white round lifted contain'>
+    <div class='pad2 contain'>
+      <h3 class='block space-bottom1'>Population &amp; median income <br />by county</h3>
+      <div class='prose quiet'>
+        <p>Select the square tool to draw a box on the map to query counties within it or search below.</p>
+        <div id='geocoder' class='geocoder'></div>
+      </div>
+    </div>
+    <div class='fill-navy-dark round-bottom small dark z10 pad1x'>
+      <div id='results'></div>
+      <fieldset id='hex-size' class='dark pad1 hidden'>
+        <label class='quiet small strong block'>Hex size: <span id='hex-value' class='highlight'></span></label>
+        <input class='col12' type='range' value='0' min='10' max='100' step='1'>
+      </fieldset>
+    </div>
+  <div id='error' class='strong small pin-bottom col12 offcanvas-bottom fill-orange animate dark quiet z1 round-bottom'></div>
+  </div>
+</div>
+
+<div class='pin-topright pad1 z10'>
+  <div id='draw-controls' class='fill-navy dark round draw-controls'></div>
+</div>
+
+<div class='pin-bottomleft z1 mb-watermark pad1'>
+  <a target='_blank' href='https://wwww.mapbox.com/'><img src='mb.svg' alt='Mapbox' /></a>
+</div>
+
+<script src='bundle.js'></script>
+</body>
+</html>
