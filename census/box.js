@@ -57,7 +57,7 @@ Box.prototype._onDown = function(e) {
   }
 
   this._active = false;
-  this._currentPixel = this._getCoordFromEvent(e);
+  this._startPixel = this._getCoordFromEvent(e);
 };
 
 Box.prototype._onKeyDown = function(e) {
@@ -70,7 +70,7 @@ Box.prototype._onKeyDown = function(e) {
 Box.prototype._onMove = function(e) {
   if (!this._active) this._active = true;
 
-  var pixel = this._getCoordFromEvent(e);
+  this._currentPixel = this._getCoordFromEvent(e);
 
   if (!this._boxEl) {
     this._boxEl = document.createElement('div');
@@ -84,10 +84,10 @@ Box.prototype._onMove = function(e) {
     this._el.appendChild(this._boxEl);
   }
 
-  var minX = Math.min(this._currentPixel.x, pixel.x),
-  maxX = Math.max(this._currentPixel.x, pixel.x),
-  minY = Math.min(this._currentPixel.y, pixel.y),
-  maxY = Math.max(this._currentPixel.y, pixel.y);
+  var minX = Math.min(this._startPixel.x, this._currentPixel.x),
+  maxX = Math.max(this._startPixel.x, this._currentPixel.x),
+  minY = Math.min(this._startPixel.y, this._currentPixel.y),
+  maxY = Math.max(this._startPixel.y, this._currentPixel.y);
 
   var pos = 'translate(' + minX + 'px,' + minY + 'px)';
 
@@ -99,26 +99,25 @@ Box.prototype._onMove = function(e) {
   e.preventDefault();
 };
 
-Box.prototype._onTouchEnd = function(e) {
-  this._onUp(e);
+Box.prototype._onTouchEnd = function() {
+  this._onUp();
   document.removeEventListener('touchmove', this._onMove);
   document.removeEventListener('touchend', this._onTouchEnd);
 };
 
-Box.prototype._onMouseUp = function(e) {
-  this._onUp(e);
+Box.prototype._onMouseUp = function() {
+  this._onUp();
   document.removeEventListener('mousemove', this._onMove);
   document.removeEventListener('mouseup', this._onMouseUp);
   document.removeEventListener('keydown', this._onKeyDown);
 };
 
-Box.prototype._onUp = function(e) {
+Box.prototype._onUp = function() {
   if (!this._active) return;
   this._active = false;
-  var pixel = this._getCoordFromEvent(e);
   this.fire('result', {
-    start: this._currentPixel,
-    end: pixel
+    start: this._startPixel,
+    end: this._currentPixel
   });
 };
 
@@ -126,8 +125,11 @@ Box.prototype._onUp = function(e) {
  * Erases all the pixels on the canvas
  */
 Box.prototype.clear = function() {
-  this._boxEl.parentElement.removeChild(this._boxEl);
-  this._boxEl = null;
+  if (this._boxEl) {
+    this._boxEl.parentElement.removeChild(this._boxEl);
+    this._boxEl = null;
+  }
+
   return this;
 };
 

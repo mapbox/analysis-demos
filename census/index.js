@@ -63,7 +63,7 @@ var layers = [
   [1000000, '#723122', 'dark'],
   [500000, '#8B4225', 'dark'],
   [100000, '#A25626', 'dark'],
-  [50000, '#B86B25', ''],
+  [50000, '#B86B25', 'dark'],
   [10000, '#CA8323', ''],
   [5000, '#DA9C20', ''],
   [1000, '#E6B71E', ''],
@@ -249,6 +249,8 @@ $hexSize.querySelector('input').addEventListener('change', function(e) {
 });
 
 map.on('mousemove', function(e) {
+  if (draw.classList.contains('active')) return;
+
   map.featuresAt(e.point, {
     includeGeometry: true,
     layer: layers.reduce(function(memo, layer, i) {
