@@ -12,7 +12,7 @@ var bounds = [
 
 var map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/streets-v8',
+  style: 'mapbox://styles/mapbox/dark-v8',
   center: [-75.1759, 39.9361],
   maxBounds: bounds,
   minZoom: 13,
@@ -25,12 +25,12 @@ var popup = new mapboxgl.Popup({
 });
 
 var layers = [
-  ['RESIDENTIAL', '#27b691'],
-  ['COMMERCIAL', '#ed5299'],
-  ['HOTELS AND APARTMENTS', '#f6d845'],
-  ['STORE WITH DWELLING', '#ed4f3e'],
-  ['VACANT LAND', '#484896'],
-  ['INDUSTRIAL', '#1279b9']
+  [0, '#27b691', 'Residential'],
+  [1, '#1279b9', 'Commecial'],
+  [2, '#484896', 'Hotels & Apartments'],
+  [3, '#ed4f3e', 'Store with dwelling'],
+  [4, '#f6d845', 'Vacant land'],
+  [5, '#ed5299', 'Industrial']
 ];
 
 function initialize() {
@@ -55,11 +55,7 @@ function initialize() {
           stops: [[13, 1], [15, 2], [17, 5]]
         }
       },
-      filter: i == 0 ?
-        ['>=', 'category', layer[0]] :
-        ['all',
-            ['>=', 'category', layer[0]],
-            ['<', 'category', layers[i - 1][0]]]
+      filter: ['==', 'category', layer[0]]
 
     }, 'place_label_city_small_s');
   });
@@ -88,15 +84,18 @@ map.on('mousemove', function(e) {
     var p = feature.properties;
     var popupContainer = document.createElement('div');
 
-    [
+    var items = [
       ['Address', p.address],
-      ['Category', p.category],
-      ['Price', p.price],
-      ['Stories', p.stories],
-      ['Rooms', p.rooms],
-      ['Bedrooms', p.bedrooms],
-      ['Bathrooms', p.bathrooms]
-    ].forEach(function(d) {
+      ['Category', layers[p.category][2]],
+      ['Price', p.price]
+    ];
+
+    if (p.stories) items.push(['Stories', p.stories]);
+    if (p.rooms) items.push(['Rooms', p.rooms]);
+    if (p.bedrooms) items.push(['Bedrooms', p.bedrooms]);
+    if (p.bathrooms) items.push(['Bathrooms', p.bathrooms]);
+
+    items.forEach(function(d) {
       var item = document.createElement('div');
       var label = document.createElement('strong');
       label.className = 'space-right0';

@@ -37,22 +37,34 @@ function formatAndPush(d) {
     '$' + parseFloat(d['Sale Price'].replace('$', '')).toLocaleString() :
     'N/A';
 
-  var rooms = d['Number of Rooms'] ? parseFloat(d['Number of Rooms']) : 'N/A';
-  var bedrooms = d['Number of Bedrooms'] ? parseFloat(d['Number of Bedrooms']) : 'N/A';
-  var bathrooms = d['Number of Bathrooms'] ? parseFloat(d['Number of Bathrooms']) : 'N/A';
-  var stories = d['Number Stories'] ? parseFloat(d['Number Stories']) : 'N/A';
+  var layers = [
+    'RESIDENTIAL',
+    'COMMERCIAL',
+    'HOTELS AND APARTMENTS',
+    'STORE WITH DWELLING',
+    'VACANT LAND',
+    'INDUSTRIAL'
+  ];
+
+  var properties = {
+    category: layers.indexOf(d['Category Code Description']),
+    address: d.Location,
+    price: price
+  };
+
+  if (d['Category Code Description'] !== 'VACANT LAND') {
+    properties.stories = d['Number Stories'] ? parseFloat(d['Number Stories']) : 'N/A';
+    properties.rooms = d['Number of Rooms'] ? parseFloat(d['Number of Rooms']) : 'N/A';
+  }
+
+  if (d['Category Code Description'] === 'RESIDENTIAL') {
+    properties.bedrooms = d['Number of Bedrooms'] ? parseFloat(d['Number of Bedrooms']) : 'N/A';
+    properties.bathrooms = d['Number of Bathrooms'] ? parseFloat(d['Number of Bathrooms']) : 'N/A';
+  }
 
   geojson.features.push({
     type: 'Feature',
-    properties: {
-      rooms: rooms,
-      bedrooms: bedrooms,
-      bathrooms: bathrooms,
-      stories: stories,
-      price: price,
-      category: d['Category Code Description'],
-      address: d.Location
-    },
+    properties: properties,
     geometry: {
       type: 'Point',
       coordinates: coords
