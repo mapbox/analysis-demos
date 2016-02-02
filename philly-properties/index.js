@@ -50,7 +50,10 @@ function initialize() {
       'source-layer': 'original',
       paint: {
         'circle-color': layer[1],
-        'circle-radius': 1
+        'circle-radius': {
+          base: 1,
+          stops: [[13, 1], [15, 2], [17, 5]]
+        }
       },
       filter: i == 0 ?
         ['>=', 'category', layer[0]] :
@@ -71,7 +74,7 @@ map.on('mousemove', function(e) {
     radius: 2.5, // Half the marker size (5px).
     includeGeometry: true,
     layer: layers.map(function(layer, i) {
-      return 'poi-' + i
+      return 'poi-' + i;
     })
   }, function(err, features) {
     map.getCanvas().style.cursor = (!err && features.length) ? 'pointer' : '';
