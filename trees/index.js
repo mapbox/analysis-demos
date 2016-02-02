@@ -17,6 +17,7 @@ var Pencil = require('pencil');
 // Data
 var trees = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/trees.geojson'), 'utf8'));
 var codes = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/species.json'), 'utf8'));
+var conditions = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/conditions.json'), 'utf8'));
 
 // Set bounds to New York, New York
 var bounds = [
@@ -53,14 +54,14 @@ var pencil = new Pencil(drawCanvas);
 // Colorized circles to represent trees
 // [<cooresponding diameter>, <color>]
 var layers = [
-  [60, '#10525A', 6],
-  [50, '#096869', 5.5],
-  [40, '#0D8074', 5],
-  [30, '#23977C', 4.5],
-  [20, '#40AF7F', 4],
-  [10, '#62C67F', 3.5],
-  [5, '#88DC7C', 3],
-  [0, '#B2F277', 2.5]
+  [40, '#10525A', 5],
+  [35, '#096869', 4.5],
+  [30, '#0D8074', 4],
+  [25, '#23977C', 3.5],
+  [20, '#40AF7F', 3],
+  [15, '#62C67F', 2.5],
+  [10, '#88DC7C', 2],
+  [0, '#B2F277', 1.5]
 ];
 
 function initialize() {
@@ -206,7 +207,7 @@ function redraw(feature) {
       label: 'Tree diameter',
       range: ['#b2f277', '#10525a'],
       aggregate: groupBy(within.features, function(d) {
-        var diameter = d.properties.diameter;
+        var diameter = d.properties.diameter + 'in';
         if (!diameter) diameter = 'UNKNOWN';
         return diameter;
       })
@@ -214,7 +215,13 @@ function redraw(feature) {
       label: 'Condition',
       aggregate: groupBy(within.features, function(d) {
         var condition = d.properties.condition;
-        if (!condition) condition = 'UNKNOWN';
+        if (!condition) {
+          condition = 'UNKNOWN';
+        } else {
+          conditions.forEach(function(d) {
+            condition = condition === d.code ? d.description : condition;
+          });
+        }
         return condition;
       })
     }, {
@@ -315,16 +322,16 @@ function buildLegend() {
   });
 
   var key = document.createElement('div');
-  key.className = 'mobile-cols clearfix small strong quiet';
+  key.className = 'mobile-cols clearfix micro';
 
   var start = document.createElement('div');
   start.className = 'col6';
-  start.textContent = layers[0][0];
+  start.textContent = layers[0][0] + 'in';
   key.appendChild(start);
 
   var end = document.createElement('div');
   end.className = 'col6 text-right';
-  end.textContent = layers[layers.length - 1][0];
+  end.textContent = layers[layers.length - 1][0] + 'in';
   key.appendChild(end);
 
   legend.appendChild(title);
@@ -357,10 +364,15 @@ map.on('mousemove', function(e) {
       p.species = p.species === code.code ? code.name : p.species;
     });
 
+    // Look up condition for description
+    conditions.forEach(function(condition) {
+      p.condition = p.condition === condition.code ? condition.description : p.condition;
+    });
+
     [
       ['Species', p.species.toLowerCase()],
       ['Condition', p.condition],
-      ['Diameter', p.diameter]
+      ['Diameter', p.diameter + 'in']
     ].forEach(function(d) {
       var item = document.createElement('div');
       var label = document.createElement('strong');

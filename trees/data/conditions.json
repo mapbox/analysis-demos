@@ -1,0 +1,30 @@
+[
+  {
+    "code": 1,
+    "description": "Excellent"
+  },
+  {
+    "code": 2,
+    "description": "Good"
+  },
+  {
+    "code": 3,
+    "description": "Poor"
+  },
+  {
+    "code": 4,
+    "description": "Dead"
+  },
+  {
+    "code": 5,
+    "description": "Shaft"
+  },
+  {
+    "code": 6,
+    "description": "Stump"
+  },
+  {
+    "code": 7,
+    "description": "Empty tree pit"
+  }
+]
