@@ -4,7 +4,10 @@
 /* eslint-disable new-cap */
 mapboxgl.accessToken = process.env.MapboxAccessToken;
 
+var Position = require('./position');
+
 // Set bounds to Philadelphia
+var center = [-75.1759, 39.9361];
 var bounds = [
   [-75.63195500381617, 39.76055866429846], // Southwest coordinates
   [-74.6075343956525, 40.122534817620846] // Northeast coordinates
@@ -12,8 +15,8 @@ var bounds = [
 
 var map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/dark-v8',
-  center: [-75.1759, 39.9361],
+  style: 'mapbox://styles/mapbox/light-v8',
+  center: center,
   maxBounds: bounds,
   minZoom: 13,
   maxZoom: 19,
@@ -35,12 +38,61 @@ var layers = [
   [5, '#ed5299', 'Industrial']
 ];
 
+var radius = 100,
+  active = false;
+
 function initialize() {
   document.body.classList.remove('loading');
 
   map.addSource('philly', {
     type: 'vector',
     url: 'mapbox://tristen.2so304hr'
+  });
+
+  map.addSource('browse-point', {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: [{
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: center
+        }
+      }, {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: center
+        },
+        properties: {
+          underlay: true
+        }
+      }]
+    }
+  });
+
+  map.addLayer({
+    id: 'browse-point-underlay',
+    type: 'circle',
+    source: 'browse-point',
+    paint: {
+      'circle-color': '#52a1d8',
+      'circle-opacity': 0.1,
+      'circle-radius': radius
+    },
+    filter: ['!=', 'underlay', undefined]
+  });
+
+  map.addLayer({
+    id: 'browse-point',
+    interactive: true,
+    type: 'circle',
+    source: 'browse-point',
+    paint: {
+      'circle-color': '#3887be',
+      'circle-radius': 8
+    }
   });
 
   layers.forEach(function(layer, i) {
@@ -93,7 +145,25 @@ map.on('click', function(e) {
 
 map.on('mousemove', function(e) {
   map.featuresAt(e.point, {
-    radius: 2.5, // Half the marker size (5px).
+    radius: 8,
+    layer: ['browse-point']
+  }, function(err, features) {
+    if (!err && features.length) {
+      map.getCanvas().style.cursor = 'move';
+      popup.remove();
+      active = true;
+    } else {
+      map.getCanvas().style.cursor = '';
+      active = false;
+    }
+  });
+});
+
+map.on('mousemove', function(e) {
+  if (active) return;
+
+  map.featuresAt(e.point, {
+    radius: 2.5, // half the marker size (5px).
     includeGeometry: true,
     layer: layers.map(function(layer, i) {
       return 'poi-' + i;

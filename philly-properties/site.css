@@ -17,7 +17,7 @@
   border:none;
   }
 .checkbox-pill label {
-  border-color:#202020;
+  border-color:rgba(0,0,0,0.4);
   }
 .checkbox-pill input[type=checkbox] + .button,
 .checkbox-pill input[type=checkbox]:checked + .button {
@@ -30,7 +30,7 @@
 .checkbox-pill input[type=checkbox] + .button > span,
 .checkbox-pill input[type=checkbox] + .button:before {
   content:'';
-  background-color:rgba(0,0,0,0.25);
+  background-color:rgba(0,0,0,0.4);
   border-radius:50%;
   display:inline-block;
   vertical-align:top;
