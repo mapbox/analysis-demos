@@ -24,6 +24,15 @@ var popup = new mapboxgl.Popup({
   closeButton: false
 });
 
+var layers = [
+  ['RESIDENTIAL', '#27b691'],
+  ['COMMERCIAL', '#ed5299'],
+  ['HOTELS AND APARTMENTS', '#f6d845'],
+  ['STORE WITH DWELLING', '#ed4f3e'],
+  ['VACANT LAND', '#484896'],
+  ['INDUSTRIAL', '#1279b9']
+];
+
 function initialize() {
   document.body.classList.remove('loading');
 
@@ -32,18 +41,25 @@ function initialize() {
     url: 'mapbox://tristen.2so304hr'
   });
 
-  map.addLayer({
-    id: 'poi',
-    interactive: true,
-    type: 'circle',
-    source: 'philly',
-    'source-layer': 'original',
-    paint: {
-      'circle-color': '#000',
-      'circle-radius': 1,
-      'circle-opacity': 0.75
-    }
-  }, 'place_label_city_small_s');
+  layers.forEach(function(layer, i) {
+    map.addLayer({
+      id: 'poi-' + i,
+      interactive: true,
+      type: 'circle',
+      source: 'philly',
+      'source-layer': 'original',
+      paint: {
+        'circle-color': layer[1],
+        'circle-radius': 1
+      },
+      filter: i == 0 ?
+        ['>=', 'category', layer[0]] :
+        ['all',
+            ['>=', 'category', layer[0]],
+            ['<', 'category', layers[i - 1][0]]]
+
+    }, 'place_label_city_small_s');
+  });
 }
 
 map.on('click', function(e) {
@@ -54,7 +70,9 @@ map.on('mousemove', function(e) {
   map.featuresAt(e.point, {
     radius: 2.5, // Half the marker size (5px).
     includeGeometry: true,
-    layer: ['poi']
+    layer: layers.map(function(layer, i) {
+      return 'poi-' + i
+    })
   }, function(err, features) {
     map.getCanvas().style.cursor = (!err && features.length) ? 'pointer' : '';
 
