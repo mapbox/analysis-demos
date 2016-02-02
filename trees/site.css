@@ -72,6 +72,8 @@
     box-shadow:none;
     }
   .sidebar-container .round-bottom { border-radius:none; }
+
+.legend-container,
 .mapboxgl-ctrl-bottom-right,
 .mb-watermark { bottom:40%; }
 }

@@ -37,6 +37,7 @@ var popup = new mapboxgl.Popup({
   closeButton: false
 });
 
+var legend = document.getElementById('legend');
 var aggregateContainer = document.getElementById('aggregates');
 var defaultText = document.createElement('strong');
   defaultText.textContent = trees.features.length.toLocaleString() + ' total trees';
@@ -52,14 +53,14 @@ var pencil = new Pencil(drawCanvas);
 // Colorized circles to represent trees
 // [<cooresponding diameter>, <color>]
 var layers = [
-  [60, '#10525A'],
-  [50, '#096869'],
-  [40, '#0D8074'],
-  [30, '#23977C'],
-  [20, '#40AF7F'],
-  [10, '#62C67F'],
-  [5, '#88DC7C'],
-  [0, '#B2F277']
+  [60, '#10525A', 6],
+  [50, '#096869', 5.5],
+  [40, '#0D8074', 5],
+  [30, '#23977C', 4.5],
+  [20, '#40AF7F', 4],
+  [10, '#62C67F', 3.5],
+  [5, '#88DC7C', 3],
+  [0, '#B2F277', 2.5]
 ];
 
 function initialize() {
@@ -112,7 +113,7 @@ function initialize() {
       interactive: true,
       paint: {
         'circle-color': layer[1],
-        'circle-radius': 2.5,
+        'circle-radius': layer[2],
         'circle-opacity': 0.75
       },
       filter: i == 0 ?
@@ -174,6 +175,8 @@ function initialize() {
     // Clear the draw canvas
     disableDraw();
   });
+
+  buildLegend();
 }
 
 function redraw(feature) {
@@ -283,6 +286,8 @@ function redraw(feature) {
     drawControls.removeChild(clearSelection);
     clearSelection = null;
   }
+
+  legend.classList.toggle('hidden', !feature);
 }
 
 function disableDraw() {
@@ -291,6 +296,40 @@ function disableDraw() {
   drawCanvas.classList.add('hidden');
   drawCanvas.style.cursor = '';
   pencil.disable().clear();
+}
+
+function buildLegend() {
+  var title = document.createElement('h4');
+  title.className = 'block space-bottom0';
+  title.textContent = 'Tree diameter';
+  var list = document.createElement('div');
+
+  layers.reverse().forEach(function(layer, i) {
+    var item = document.createElement('div');
+    item.className = 'inline dot';
+    if (i !== 0) item.classList.add('space-left0');
+    item.style.backgroundColor = layer[1];
+    item.style.width = layer[2] * 2 + 'px';
+    item.style.height = layer[2] * 2 + 'px';
+    list.appendChild(item);
+  });
+
+  var key = document.createElement('div');
+  key.className = 'mobile-cols clearfix small strong quiet';
+
+  var start = document.createElement('div');
+  start.className = 'col6';
+  start.textContent = layers[0][0];
+  key.appendChild(start);
+
+  var end = document.createElement('div');
+  end.className = 'col6 text-right';
+  end.textContent = layers[layers.length - 1][0];
+  key.appendChild(end);
+
+  legend.appendChild(title);
+  legend.appendChild(list);
+  legend.appendChild(key);
 }
 
 map.on('mousemove', function(e) {
