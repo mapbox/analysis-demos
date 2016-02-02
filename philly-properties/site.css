@@ -4,23 +4,6 @@
   background:rgba(0,0,0,0.25);
   }
 
-.draw-controls > button {
-  background-color:transparent;
-  }
-  .draw-controls > button:hover {
-    background-color:rgba(0,0,0,0.5);
-    }
-  .draw-controls > button:active {
-    box-shadow:none;
-    }
-  .draw-controls > button.active {
-    background-color:rgba(0,0,0,0.5);
-    box-shadow:0 0 0 3px rgba(56,135,190,0.75);
-    }
-  .draw-controls > button:only-child {
-    border-radius:3px;
-    }
-
 .sidebar-panel { width:320px; }
 
 .lifted {
@@ -29,6 +12,41 @@
 
 .bar { border-right:1px solid rgba(0,0,0,0.5); }
 .bar:last-child { border-right:none; }
+
+.checkbox-pill > :last-child {
+  border:none;
+  }
+.checkbox-pill label {
+  border-color:#202020;
+  }
+.checkbox-pill input[type=checkbox] + .button,
+.checkbox-pill input[type=checkbox]:checked + .button {
+  background-color:#555;
+  }
+.checkbox-pill input[type=checkbox] + .button:hover,
+.checkbox-pill input[type=checkbox]:checked + .button:hover {
+  background-color:#444;
+  }
+.checkbox-pill input[type=checkbox] + .button > span,
+.checkbox-pill input[type=checkbox] + .button:before {
+  content:'';
+  background-color:rgba(0,0,0,0.25);
+  border-radius:50%;
+  display:inline-block;
+  vertical-align:top;
+  width:16px;
+  height:16px;
+  margin-right:10px;
+  }
+.checkbox-pill input[type=checkbox] + .button > span {
+  position:absolute;
+  left:14px;
+  top:14px;
+  width:8px;
+  height:8px;
+  display:none;
+  }
+  .checkbox-pill input[type=checkbox]:checked + .button > span { display:inline-block }
 
 [data-tooltip] {
   cursor:pointer;

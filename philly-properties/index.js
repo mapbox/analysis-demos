@@ -24,6 +24,8 @@ var popup = new mapboxgl.Popup({
   closeButton: false
 });
 
+var filterGroup = document.getElementById('filter-group');
+
 var layers = [
   [0, '#27b691', 'Residential'],
   [1, '#1279b9', 'Commecial'],
@@ -42,8 +44,9 @@ function initialize() {
   });
 
   layers.forEach(function(layer, i) {
+    var layerID = 'poi-' + i;
     map.addLayer({
-      id: 'poi-' + i,
+      id: layerID,
       interactive: true,
       type: 'circle',
       source: 'philly',
@@ -58,6 +61,29 @@ function initialize() {
       filter: ['==', 'category', layer[0]]
 
     }, 'place_label_city_small_s');
+
+    var input = document.createElement('input');
+    input.type = 'checkbox';
+    input.id = layerID;
+    input.checked = true;
+    filterGroup.appendChild(input);
+
+    var label = document.createElement('label');
+    label.className = 'button col12';
+    label.setAttribute('for', layerID);
+    label.textContent = layer[2];
+
+    var labelKey = document.createElement('span');
+    labelKey.style.backgroundColor = layer[1];
+
+    label.appendChild(labelKey);
+    filterGroup.appendChild(label);
+
+    // When the checkbox changes, update the visibility of the layer.
+    input.addEventListener('change', function(e) {
+        map.setLayoutProperty(layerID, 'visibility',
+            e.target.checked ? 'visible' : 'none');
+    });
   });
 }
 
