@@ -34,6 +34,8 @@ var map = new mapboxgl.Map({
   maxBounds: bounds
 });
 
+if (window.location.search.indexOf('embed') !== -1) map.scrollZoom.disable();
+
 var popup = new mapboxgl.Popup({
   closeButton: false
 });
