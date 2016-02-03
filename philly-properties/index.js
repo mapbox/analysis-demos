@@ -4,7 +4,7 @@
 /* eslint-disable new-cap */
 mapboxgl.accessToken = process.env.MapboxAccessToken;
 
-var Position = require('./position');
+var Circle = require('./circle');
 
 // Set bounds to Philadelphia
 var center = [-75.1759, 39.9361];
@@ -23,7 +23,16 @@ var map = new mapboxgl.Map({
   zoom: 13
 });
 
-var position = new Position(map.getContainer());
+var radius = 100;
+
+var circle = new Circle(map.getContainer(), {
+  radius: radius,
+  position: map.project(center),
+  fill: '#3887be',
+  fillRadius: 'rgba(82, 161, 216, 0.25)'
+});
+
+circle.draw().enable();
 
 var popup = new mapboxgl.Popup({
   closeButton: false
@@ -40,66 +49,12 @@ var layers = [
   [5, '#ed5299', 'Industrial']
 ];
 
-var radius = 100,
-  active = false;
-
-var interactiveFeatures = {
-  type: 'FeatureCollection',
-  features: [{
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: center
-    }
-  }, {
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: center
-    },
-    properties: {
-      underlay: true
-    }
-  }]
-};
-
 function initialize() {
   document.body.classList.remove('loading');
 
   map.addSource('philly', {
     type: 'vector',
     url: 'mapbox://tristen.2so304hr'
-  });
-
-  map.addSource('interactiveFeatures', {
-    type: 'geojson',
-    data: interactiveFeatures
-  });
-
-  map.addLayer({
-    id: 'browse-point-underlay',
-    type: 'circle',
-    source: 'interactiveFeatures',
-    layout: {
-      visibility: 'none'
-    },
-    paint: {
-      'circle-color': '#52a1d8',
-      'circle-opacity': 0.25,
-      'circle-radius': radius
-    },
-    filter: ['!=', 'underlay', undefined]
-  });
-
-  map.addLayer({
-    id: 'browse-point',
-    interactive: true,
-    type: 'circle',
-    source: 'interactiveFeatures',
-    paint: {
-      'circle-color': '#3887be',
-      'circle-radius': 8
-    }
   });
 
   layers.forEach(function(layer, i) {
@@ -146,51 +101,28 @@ function initialize() {
   });
 }
 
-position.on('move', function(e) {
-  var c = map.unproject(e.current);
-  interactiveFeatures.features.map(function(feature) {
-    feature.geometry.coordinates = [c.lng, c.lat];
-  });
-
-  map.getSource('interactiveFeatures').setData(interactiveFeatures);
+circle.on('start', function() {
+  console.log('hey');
+  map.dragPan.disable();
 });
 
-position.on('result', function(e) {
+circle.on('move', function(e) {
   var c = map.unproject(e.current);
+  console.log('circle moved', c);
+});
 
-  // Show features around this radius.
-  console.log(c);
+circle.on('result', function(e) {
+  var c = map.unproject(e.end);
+  map.dragPan.enable();
+  console.log('circle result', c);
 });
 
 map.on('click', function(e) {
   console.log('coordinates: ', e.lngLat);
 });
 
+/*
 map.on('mousemove', function(e) {
-  map.featuresAt(e.point, {
-    radius: 8,
-    layer: ['browse-point']
-  }, function(err, features) {
-    if (!err && features.length) {
-      map.getCanvas().style.cursor = 'move';
-      map.setLayoutProperty('browse-point-underlay', 'visibility', 'visible');
-      popup.remove();
-      map.dragPan.disable();
-      position.enable();
-      active = true;
-    } else {
-      map.getCanvas().style.cursor = '';
-      map.setLayoutProperty('browse-point-underlay', 'visibility', 'none');
-      map.dragPan.enable();
-      position.disable();
-      active = false;
-    }
-  });
-});
-
-map.on('mousemove', function(e) {
-  if (active) return;
-
   map.featuresAt(e.point, {
     radius: 2.5, // half the marker size (5px).
     includeGeometry: true,
@@ -242,5 +174,6 @@ map.on('mousemove', function(e) {
       .addTo(map);
   });
 });
+*/
 
 map.on('load', initialize);
