@@ -23,6 +23,8 @@ var map = new mapboxgl.Map({
   zoom: 13
 });
 
+var position = new Position(map.getContainer());
+
 var popup = new mapboxgl.Popup({
   closeButton: false
 });
@@ -41,6 +43,26 @@ var layers = [
 var radius = 100,
   active = false;
 
+var interactiveFeatures = {
+  type: 'FeatureCollection',
+  features: [{
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: center
+    }
+  }, {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: center
+    },
+    properties: {
+      underlay: true
+    }
+  }]
+};
+
 function initialize() {
   document.body.classList.remove('loading');
 
@@ -49,36 +71,21 @@ function initialize() {
     url: 'mapbox://tristen.2so304hr'
   });
 
-  map.addSource('browse-point', {
+  map.addSource('interactiveFeatures', {
     type: 'geojson',
-    data: {
-      type: 'FeatureCollection',
-      features: [{
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: center
-        }
-      }, {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: center
-        },
-        properties: {
-          underlay: true
-        }
-      }]
-    }
+    data: interactiveFeatures
   });
 
   map.addLayer({
     id: 'browse-point-underlay',
     type: 'circle',
-    source: 'browse-point',
+    source: 'interactiveFeatures',
+    layout: {
+      visibility: 'none'
+    },
     paint: {
       'circle-color': '#52a1d8',
-      'circle-opacity': 0.1,
+      'circle-opacity': 0.25,
       'circle-radius': radius
     },
     filter: ['!=', 'underlay', undefined]
@@ -88,7 +95,7 @@ function initialize() {
     id: 'browse-point',
     interactive: true,
     type: 'circle',
-    source: 'browse-point',
+    source: 'interactiveFeatures',
     paint: {
       'circle-color': '#3887be',
       'circle-radius': 8
@@ -133,11 +140,27 @@ function initialize() {
 
     // When the checkbox changes, update the visibility of the layer.
     input.addEventListener('change', function(e) {
-        map.setLayoutProperty(layerID, 'visibility',
-            e.target.checked ? 'visible' : 'none');
+      map.setLayoutProperty(layerID, 'visibility',
+        e.target.checked ? 'visible' : 'none');
     });
   });
 }
+
+position.on('move', function(e) {
+  var c = map.unproject(e.current);
+  interactiveFeatures.features.map(function(feature) {
+    feature.geometry.coordinates = [c.lng, c.lat];
+  });
+
+  map.getSource('interactiveFeatures').setData(interactiveFeatures);
+});
+
+position.on('result', function(e) {
+  var c = map.unproject(e.current);
+
+  // Show features around this radius.
+  console.log(c);
+});
 
 map.on('click', function(e) {
   console.log('coordinates: ', e.lngLat);
@@ -150,10 +173,16 @@ map.on('mousemove', function(e) {
   }, function(err, features) {
     if (!err && features.length) {
       map.getCanvas().style.cursor = 'move';
+      map.setLayoutProperty('browse-point-underlay', 'visibility', 'visible');
       popup.remove();
+      map.dragPan.disable();
+      position.enable();
       active = true;
     } else {
       map.getCanvas().style.cursor = '';
+      map.setLayoutProperty('browse-point-underlay', 'visibility', 'none');
+      map.dragPan.enable();
+      position.disable();
       active = false;
     }
   });

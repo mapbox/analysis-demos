@@ -33,17 +33,17 @@
   background-color:rgba(0,0,0,0.4);
   border-radius:50%;
   display:inline-block;
-  vertical-align:top;
-  width:16px;
-  height:16px;
+  vertical-align:middle;
+  width:12px;
+  height:12px;
   margin-right:10px;
   }
 .checkbox-pill input[type=checkbox] + .button > span {
   position:absolute;
-  left:14px;
-  top:14px;
-  width:8px;
-  height:8px;
+  left:13px;
+  top:13px;
+  width:6px;
+  height:6px;
   display:none;
   }
   .checkbox-pill input[type=checkbox]:checked + .button > span { display:inline-block }
