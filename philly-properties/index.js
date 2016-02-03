@@ -20,14 +20,14 @@ var map = new mapboxgl.Map({
   maxBounds: bounds,
   minZoom: 13,
   maxZoom: 19,
-  zoom: 13
+  zoom: 15
 });
 
-var radius = 100;
+var radius = 100, position = map.project(center);
 
 var circle = new Circle(map.getContainer(), {
   radius: radius,
-  position: map.project(center),
+  position: position,
   fill: '#3887be',
   fillRadius: 'rgba(82, 161, 216, 0.25)'
 });
@@ -39,6 +39,11 @@ var popup = new mapboxgl.Popup({
 });
 
 var filterGroup = document.getElementById('filter-group');
+
+var geojson = {
+  type: 'FeatureCollection',
+  features: []
+};
 
 var layers = [
   [0, '#27b691', 'Residential'],
@@ -57,14 +62,30 @@ function initialize() {
     url: 'mapbox://tristen.2so304hr'
   });
 
+  map.addLayer({
+    id: 'philly',
+    type: 'circle',
+    source: 'philly',
+    interactive: true,
+    'source-layer': 'original',
+    paint: {
+      'circle-color': 'rgba(0,0,0,0)',
+      'circle-radius': 0
+    }
+  });
+
+  map.addSource('within', {
+    type: 'geojson',
+    data: geojson
+  });
+
   layers.forEach(function(layer, i) {
     var layerID = 'poi-' + i;
     map.addLayer({
       id: layerID,
       interactive: true,
       type: 'circle',
-      source: 'philly',
-      'source-layer': 'original',
+      source: 'within',
       paint: {
         'circle-color': layer[1],
         'circle-radius': {
@@ -102,24 +123,28 @@ function initialize() {
 }
 
 circle.on('start', function() {
-  console.log('hey');
   map.dragPan.disable();
 });
 
-circle.on('move', function(e) {
-  var c = map.unproject(e.current);
-  console.log('circle moved', c);
+map.on('source.load', function(e) {
+  if (e.source.id === 'philly') window.setTimeout(redraw, 1000);
 });
 
-circle.on('result', function(e) {
-  var c = map.unproject(e.end);
+function redraw(e) {
   map.dragPan.enable();
-  console.log('circle result', c);
-});
+  if (e && e.end) position = e.end;
+  map.featuresAt(position, {
+    radius: radius,
+    includeGeometry: true,
+    layer: ['philly']
+  }, function(err, features) {
+    if (err || !features.length) return;
+    geojson.features = features;
+    map.getSource('within').setData(geojson);
+  });
+}
 
-map.on('click', function(e) {
-  console.log('coordinates: ', e.lngLat);
-});
+circle.on('result', redraw);
 
 /*
 map.on('mousemove', function(e) {

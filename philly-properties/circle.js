@@ -65,6 +65,7 @@ Circle.prototype._onDown = function(e) {
 
   this._active = false;
   this._startPixel = this._getCoordFromEvent(e);
+  this._el.classList.remove('inactive');
   this.fire('start', {
     start: this._startPixel
   });
@@ -83,6 +84,7 @@ Circle.prototype._onKeyDown = function(e) {
 Circle.prototype.draw = function() {
   if (!this._el) {
     this._el = document.createElement('div');
+    this._el.className = 'mapboxgl-radius-browser inactive';
     this._el.style.backgroundColor = this._fill;
     this._el.style.borderStyle = 'solid';
     this._el.style.borderColor = this._stroke;
@@ -141,6 +143,7 @@ Circle.prototype._onMouseUp = function() {
 Circle.prototype._onUp = function() {
   if (!this._active) return;
   this._active = false;
+  this._el.classList.add('inactive');
   this.fire('result', {
     start: this._startPixel,
     end: this._currentPixel

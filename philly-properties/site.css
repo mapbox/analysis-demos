@@ -48,27 +48,15 @@
   }
   .checkbox-pill input[type=checkbox]:checked + .button > span { display:inline-block }
 
-[data-tooltip] {
-  cursor:pointer;
+.mapboxgl-radius-browser {
+  -webkit-transition:box-shadow 150ms ease-out;
+          transition:box-shadow 150ms ease-out;
   }
-[data-tooltip]:after {
-  content:attr(data-tooltip);
-  font-family:'Open Sans Bold', sans-serif;
-  font-weight:normal;
-  position:absolute;
-  color:#fff;
-  display:none;
-  width:100%;
-  top:-25px;
-  left:0;
-  text-transform:capitalize;
-  text-align:right;
-  }
-[data-tooltip]:hover {
-  opacity:0.9;
-  }
-  [data-tooltip]:hover:after {
-    display:block;
+  .mapboxgl-radius-browser.inactive:not(:hover) {
+    box-shadow:none!important;
+    }
+  .mapboxgl-radius-browser:hover {
+    cursor:move;
     }
 
 /* Mobile */
