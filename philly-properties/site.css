@@ -5,6 +5,7 @@
   }
 
 .sidebar-panel { width:320px; }
+.draw-controls { left:320px; }
 
 .lifted {
   box-shadow:0 1px 2px rgba(0,0,0,0.20);
@@ -12,6 +13,20 @@
 
 .bar { border-right:1px solid rgba(0,0,0,0.5); }
 .bar:last-child { border-right:none; }
+
+.draw-controls button {
+  background-color:transparent;
+  }
+  .draw-controls button:hover {
+    background-color:rgba(0,0,0,0.25);
+    }
+  .draw-controls button:active {
+    box-shadow:none;
+    }
+  .draw-controls button.active {
+    background-color:rgba(0,0,0,0.5);
+    box-shadow:0 0 0 3px rgba(56,135,190,0.75);
+    }
 
 .checkbox-pill > :last-child {
   border:none;
@@ -41,7 +56,7 @@
 .checkbox-pill input[type=checkbox] + .button > span {
   position:absolute;
   left:13px;
-  top:13px;
+  top:18px;
   width:6px;
   height:6px;
   display:none;
@@ -49,15 +64,17 @@
   .checkbox-pill input[type=checkbox]:checked + .button > span { display:inline-block }
 
 .mapboxgl-radius-browser {
-  -webkit-transition:box-shadow 150ms ease-out;
-          transition:box-shadow 150ms ease-out;
+  -webkit-transition:background-color 150ms ease-out;
+          transition:background-color 150ms ease-out;
   }
-  .mapboxgl-radius-browser.inactive:not(:hover) {
-    box-shadow:none!important;
-    }
   .mapboxgl-radius-browser:hover {
     cursor:move;
     }
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib { background-color:rgba(0,0,0,0.5); }
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib a { color:#fff; }
+
+.sidebar-container .keyline-top { border-color:rgba(0,0,0,0.4); }
 
 /* Mobile */
 @media only screen and (max-width:640px) {

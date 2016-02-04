@@ -14,22 +14,25 @@
 <div id='map' class='map'></div>
 
 <div class='pin-topleft pad1 sidebar-panel z10 sidebar-container'>
-  <div id='sidebar' class='fill-white round lifted contain'>
+  <div id='sidebar' class='fill-dark dark round lifted contain'>
     <div class='pad2 contain'>
       <h3 class='block space-bottom1'>Properties in Philadelphia</h3>
       <div class='prose quiet'>
         <p>Click anywhere on the map to drop a marker.</p>
       </div>
     </div>
-    <div class='fill-navy-dark round-bottom small dark z10 pad2 hidden'>
-      <div id='results' class='space-bottom1'></div>
-      <fieldset id='hex-size' class='dark hidden'>
-        <label class='quiet small strong block'>Hex size: <span id='hex-value' class='highlight'></span></label>
-        <input class='col12' type='range' value='0' min='10' max='100' step='1'>
+    <div class='fill-darken1 keyline-top round-bottom small dark z10 pad2'>
+      <fieldset id='radius' class='dark'>
+        <label class='small strong block'><span class='quiet'>Search radius:</span> <span id='radius-value' class='highlight'></span></label>
+        <input class='col12' type='range' value='0' min='20' max='500' step='1'>
       </fieldset>
     </div>
     <div id='error' class='strong small pin-bottom col12 offcanvas-bottom fill-orange animate dark quiet z1 round-bottom'></div>
   </div>
+</div>
+
+<div class='pin-topleft pad1 z10 draw-controls'>
+  <div id='draw-controls' class='fill-dark dark round'></div>
 </div>
 
 <div class='pin-topright pad1 z10'>

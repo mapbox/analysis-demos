@@ -15,7 +15,7 @@ var bounds = [
 
 var map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/light-v8',
+  style: 'mapbox://styles/mapbox/dark-v8',
   center: center,
   maxBounds: bounds,
   minZoom: 13,
@@ -23,6 +23,8 @@ var map = new mapboxgl.Map({
   zoom: 15
 });
 
+var $radius = document.getElementById('radius');
+var $radiusValue = document.getElementById('radius-value');
 var radius = 100, position = map.project(center);
 
 var circle = new Circle(map.getContainer(), {
@@ -120,11 +122,32 @@ function initialize() {
         e.target.checked ? 'visible' : 'none');
     });
   });
-}
 
-circle.on('start', function() {
-  map.dragPan.disable();
-});
+  // Radius control
+  var draw = document.createElement('button');
+  draw.id = 'draw';
+  draw.className = 'icon point button round';
+  draw.title = 'Draw';
+
+  draw.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (draw.classList.contains('active')) {
+      draw.classList.remove('active');
+      map.dragPan.enable();
+      circle.disable();
+    } else {
+      draw.classList.add('active');
+      map.dragPan.disable();
+      circle.enable();
+    }
+  });
+
+  document.getElementById('draw-controls').appendChild(draw);
+  $radius.querySelector('input').value = radius;
+  $radiusValue.textContent = radius;
+}
 
 map.on('source.load', function(e) {
   if (e.source.id === 'philly') window.setTimeout(redraw, 1000);
@@ -200,5 +223,13 @@ map.on('mousemove', function(e) {
   });
 });
 */
+
+$radius.querySelector('input').addEventListener('input', function(e) {
+  $radiusValue.textContent = e.target.value;
+  radius = e.target.value;
+  circle.setRadius(radius);
+});
+
+$radius.querySelector('input').addEventListener('change', redraw);
 
 map.on('load', initialize);

@@ -65,7 +65,6 @@ Circle.prototype._onDown = function(e) {
 
   this._active = false;
   this._startPixel = this._getCoordFromEvent(e);
-  this._el.classList.remove('inactive');
   this.fire('start', {
     start: this._startPixel
   });
@@ -84,23 +83,24 @@ Circle.prototype._onKeyDown = function(e) {
 Circle.prototype.draw = function() {
   if (!this._el) {
     this._el = document.createElement('div');
-    this._el.className = 'mapboxgl-radius-browser inactive';
-    this._el.style.backgroundColor = this._fill;
-    this._el.style.borderStyle = 'solid';
-    this._el.style.borderColor = this._stroke;
-    this._el.style.borderWidth = this._strokeWidth + 'px';
-    this._el.style.borderRadius = '50%';
-    this._el.style.display = 'absolute';
-    this._el.style.boxShadow = '0 0 0 ' + this._radius + 'px ' + this._fillRadius;
-    this._el.style.top = 0;
-    this._el.style.left = 0;
-    this._el.style.width = '10px';
-    this._el.style.height = '10px';
-    var pos = 'translate(' + this._x + 'px,' + this._y + 'px)';
-    this._el.style.transform = pos;
-    this._el.style.WebkitTransform = pos;
+    this._el.className = 'mapboxgl-radius-browser';
     this._container.appendChild(this._el);
   }
+
+  this._el.style.backgroundColor = this._fill;
+  this._el.style.borderStyle = 'solid';
+  this._el.style.borderColor = this._stroke;
+  this._el.style.borderWidth = this._strokeWidth + 'px';
+  this._el.style.borderRadius = '50%';
+  this._el.style.display = 'absolute';
+  this._el.style.boxShadow = '0 0 0 ' + this._radius + 'px ' + this._fillRadius;
+  this._el.style.top = 0;
+  this._el.style.left = 0;
+  this._el.style.width = '20px';
+  this._el.style.height = '20px';
+  var pos = 'translate(' + this._x + 'px,' + this._y + 'px)';
+  this._el.style.transform = pos;
+  this._el.style.WebkitTransform = pos;
 
   return this;
 };
@@ -112,9 +112,9 @@ Circle.prototype._onMove = function(e) {
 
   if (!this._el) this.draw();
 
-  var x = this._currentPixel.x;
-  var y = this._currentPixel.y;
-  var pos = 'translate(' + x + 'px,' + y + 'px)';
+  this._x = this._currentPixel.x;
+  this._y = this._currentPixel.y;
+  var pos = 'translate(' + this._x + 'px,' + this._y + 'px)';
 
   this._el.style.transform = pos;
   this._el.style.WebkitTransform = pos;
@@ -143,7 +143,6 @@ Circle.prototype._onMouseUp = function() {
 Circle.prototype._onUp = function() {
   if (!this._active) return;
   this._active = false;
-  this._el.classList.add('inactive');
   this.fire('result', {
     start: this._startPixel,
     end: this._currentPixel
@@ -185,6 +184,8 @@ Circle.prototype.disable = function() {
  */
 Circle.prototype.setFill = function(color) {
   this._fill = color;
+  this.draw();
+  return this;
 };
 
 /**
@@ -192,6 +193,8 @@ Circle.prototype.setFill = function(color) {
  */
 Circle.prototype.setRadius = function(n) {
   this._radius = n;
+  this.draw();
+  return this;
 };
 
 /**
@@ -199,6 +202,8 @@ Circle.prototype.setRadius = function(n) {
  */
 Circle.prototype.setRadiusFill = function(color) {
   this._fillRadius = color;
+  this.draw();
+  return this;
 };
 
 /**
@@ -206,6 +211,8 @@ Circle.prototype.setRadiusFill = function(color) {
  */
 Circle.prototype.setStroke = function(color) {
   this._stroke = color;
+  this.draw();
+  return this;
 };
 
 /**
@@ -213,6 +220,8 @@ Circle.prototype.setStroke = function(color) {
  */
 Circle.prototype.setStrokeWidth = function(n) {
   this._strokeWidth = n;
+  this.draw();
+  return this;
 };
 
 /**
