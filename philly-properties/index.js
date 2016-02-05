@@ -1,13 +1,14 @@
 'use strict';
 
 /* global mapboxgl */
-/* eslint-disable new-cap */
+/* eslint-disable no-loop-func */
 mapboxgl.accessToken = process.env.MapboxAccessToken;
 
 var fs = require('fs');
 var path = require('path');
 
 var template = require('lodash.template');
+var groupBy = require('lodash.groupby');
 var Circle = require('./circle');
 
 // Set bounds to Philadelphia
@@ -32,6 +33,9 @@ var map = new mapboxgl.Map({
 
 var $radius = document.getElementById('radius');
 var $radiusValue = document.getElementById('radius-value');
+var $filterGroup = document.getElementById('filter-group');
+var $listings = document.getElementById('listings');
+
 var radius = 100;
 var position = map.project(center);
 var error;
@@ -48,9 +52,6 @@ circle.draw().enable();
 var popup = new mapboxgl.Popup({
   closeButton: false
 });
-
-var filterGroup = document.getElementById('filter-group');
-var listings = document.getElementById('listings');
 
 var geojson = {
   type: 'FeatureCollection',
@@ -71,6 +72,7 @@ function loading(state) {
 }
 
 function emitError(msg) {
+  loading(false);
   window.clearTimeout(error);
   var $error = document.getElementById('error');
 
@@ -131,7 +133,7 @@ function initialize() {
     input.type = 'checkbox';
     input.id = layerID;
     input.checked = true;
-    filterGroup.appendChild(input);
+    $filterGroup.appendChild(input);
 
     var label = document.createElement('label');
     label.className = 'button col12';
@@ -142,7 +144,7 @@ function initialize() {
     labelKey.style.backgroundColor = layer[1];
 
     label.appendChild(labelKey);
-    filterGroup.appendChild(label);
+    $filterGroup.appendChild(label);
 
     // When the checkbox changes, update the visibility of the layer.
     input.addEventListener('change', function(e) {
@@ -161,7 +163,7 @@ map.on('source.load', function(e) {
 
 function redraw(e) {
   loading(true);
-  listings.innerHTML = '';
+  $listings.innerHTML = '';
   map.dragPan.enable();
   if (e && e.end) position = e.end;
   map.featuresAt(position, {
@@ -169,40 +171,69 @@ function redraw(e) {
     includeGeometry: true,
     layer: ['philly']
   }, function(err, features) {
-    if (err || !features.length) return;
+    if (err) return emitError(err.message);
+    if (!features.length) return emitError('No properties found');
+
     geojson.features = features;
     map.getSource('within').setData(geojson);
 
-    features.forEach(function(feature) {
-      console.log(feature);
+    features = groupBy(features, function(d) {
+      return d.properties.category;
+    });
+
+    for (var prop in features) {
+      var hood = document.createElement('div');
+      hood.className = 'space-bottom1 keyline-bottom listing-group';
+
+      var heading = document.createElement('header');
+      heading.className = 'pad1y pad2x';
+
+      var title = document.createElement('strong');
+      title.className = 'small space-right0';
 
       layers.forEach(function(l) {
-        if (l[0] === feature.properties.category) feature.fill = l[1];
+        if (l[0] === parseInt(prop, 10)) title.textContent = l[2];
       });
 
-      var item = document.createElement('div');
-      item.innerHTML = listingTemplate(feature);
-      listings.appendChild(item);
+      var sub = document.createElement('span');
+      sub.className = 'quiet small';
+      sub.textContent = features[prop].length + ' properties';
 
-      /*
-      item.querySelector('button').addEventListener('click', function(e) {
-        var elements = $listings.querySelectorAll('button');
+      heading.appendChild(title);
+      heading.appendChild(sub);
+      hood.appendChild(heading);
 
-        Array.prototype.forEach.call(elements, function(el) {
-          el.classList.remove('active');
+      features[prop].forEach(function(feature) {
+        layers.forEach(function(l) {
+          if (l[0] === feature.properties.category) feature.fill = l[1];
         });
 
-        e.target.classList.add('active');
-        featureSelection(feature);
+        var item = document.createElement('div');
+        item.innerHTML = listingTemplate(feature);
+        hood.appendChild(item);
+
+        /*
+        item.querySelector('button').addEventListener('click', function(e) {
+          var elements = $listings.querySelectorAll('button');
+
+          Array.prototype.forEach.call(elements, function(el) {
+            el.classList.remove('active');
+          });
+
+          e.target.classList.add('active');
+          featureSelection(feature);
+        });
+
+        item.querySelector('button').addEventListener('mouseover', function() {
+          featureHover(feature);
+        });
+        */
+
       });
 
-      item.querySelector('button').addEventListener('mouseover', function() {
-        featureHover(feature);
-      });
-      */
-
+      $listings.appendChild(hood);
       loading(false);
-    });
+    }
   });
 }
 
@@ -270,5 +301,13 @@ $radius.querySelector('input').addEventListener('input', function(e) {
 });
 
 $radius.querySelector('input').addEventListener('change', redraw);
+
+$listings.addEventListener('scroll', function(e) {
+  var sections = $listings.querySelectorAll('.listing-group');
+  Array.prototype.forEach.call(sections, function(el, i) {
+    var target = el.target;
+
+  });
+});
 
 map.on('load', initialize);

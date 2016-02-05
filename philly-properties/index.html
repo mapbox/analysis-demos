@@ -14,7 +14,7 @@
 <div id='map' class='map'></div>
 
 <div class='pin-topleft pin-bottomleft pad1 z10 sidebar-container'>
-  <div id='sidebar' class='fill-dark dark round lifted full-height-container'>
+  <div id='sidebar' class='fill-dark dark round lifted full-height-container contain'>
 
     <div class='pad2 contain'>
       <h3 class='block space-bottom1'>Properties in Philadelphia</h3>
@@ -27,9 +27,9 @@
         <label class='small strong block'><span class='quiet'>Search radius:</span> <span id='radius-value' class='highlight'></span></label>
         <input class='col12' type='range' value='0' min='20' max='250' step='1'>
       </fieldset>
-      <div id='error' class='strong small pin-bottom col12 offcanvas-bottom fill-orange animate dark quiet z1 round-bottom'></div>
     </div>
     <div id='listings' class='fill-darken1 scroll'></div>
+    <div id='error' class='strong small pin-bottom col12 offcanvas-bottom fill-orange animate dark z1 round-bottom'></div>
   </div>
 </div>
 
@@ -38,7 +38,7 @@
 </div>
 
 <div class='pin-bottomleft z1 mb-watermark pad1'>
-  <a target='_blank' href='https://wwww.mapbox.com/'><img src='mb.svg' alt='Mapbox' /></a>
+  <a target='_blank' href='https://www.mapbox.com/'><img src='mb.svg' alt='Mapbox' /></a>
 </div>
 
 <script src='bundle.js'></script>
