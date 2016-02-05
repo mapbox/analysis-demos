@@ -9,8 +9,17 @@
   }
 
 /* Sidebar container height rules */
-.full-height-container { overflow:hidden; height:100%; }
-.full-height-container .scroll { overflow:auto; height:100%; }
+.full-height-container {
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  }
+  .full-height-container .scroll {
+    flex:1;
+    overflow-y:scroll;
+    min-height:0;
+    }
+
 .sidebar-container { width:320px; }
 .sidebar-container .keyline-top { border-color:rgba(0,0,0,0.4); }
 
