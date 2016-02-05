@@ -170,6 +170,8 @@ map.on('source.load', function(e) {
 });
 
 function buildListings(listings) {
+  $listings.innerHTML = '';
+
   if (categories.length) {
     listings = listings.filter(function(d) {
       return categories.indexOf(d.properties.category) === -1;
@@ -193,7 +195,14 @@ function buildListings(listings) {
       }
     });
 
-    if (prop === Object.keys(listings)[0]) sectionHeading(section);
+    if (prop === Object.keys(listings)[0]) {
+      buildHeader($listingsHeader, section);
+    } else {
+      var header = document.createElement('header');
+      header.className = 'pad2x pad1y';
+      buildHeader(header, section);
+      section.appendChild(header);
+    }
 
     listings[prop].forEach(function(feature) {
       layers.forEach(function(l) {
@@ -226,6 +235,25 @@ function buildListings(listings) {
     $listings.appendChild(section);
     loading(false);
   }
+}
+
+function buildHeader(container, section) {
+  var properties = section.getAttribute('data-properties');
+  var category = section.getAttribute('data-category');
+  var fill = section.getAttribute('data-fill');
+
+  var title = document.createElement('strong');
+  title.className = 'small space-right0';
+  title.textContent = category;
+
+  var sub = document.createElement('span');
+  sub.className = 'quiet small';
+  sub.textContent = properties + ' properties';
+
+  container.innerHTML = '';
+  container.style.backgroundColor = fill;
+  container.appendChild(title);
+  container.appendChild(sub);
 }
 
 function redraw(e) {
@@ -322,25 +350,6 @@ function offset(el) {
   };
 }
 
-function sectionHeading(section) {
-  var properties = section.getAttribute('data-properties');
-  var category = section.getAttribute('data-category');
-  var fill = section.getAttribute('data-fill');
-
-  var title = document.createElement('strong');
-  title.className = 'small space-right0';
-  title.textContent = category;
-
-  var sub = document.createElement('span');
-  sub.className = 'quiet small';
-  sub.textContent = properties + ' properties';
-
-  $listingsHeader.innerHTML = '';
-  $listingsHeader.style.backgroundColor = fill;
-  $listingsHeader.appendChild(title);
-  $listingsHeader.appendChild(sub);
-}
-
 var sectionHeadingPosition = offset($listingsHeader);
 var currentCategory;
 
@@ -353,7 +362,7 @@ $listings.addEventListener('scroll', function() {
          sectionHeadingPosition.top <= offset(next).top) {
         var category = el.getAttribute('data-category');
         if (category !== currentCategory) {
-          sectionHeading(el);
+          buildHeader($listingsHeader, el);
           currentCategory = category;
         }
         return;
