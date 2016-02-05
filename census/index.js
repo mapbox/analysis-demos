@@ -33,6 +33,8 @@ var map = new mapboxgl.Map({
   zoom: 3.75
 });
 
+if (window.location.search.indexOf('embed') !== -1) map.scrollZoom.disable();
+
 var popup = new mapboxgl.Popup({
   closeButton: false
 });
