@@ -4,8 +4,6 @@
   background:rgba(0,0,0,0.25);
   }
 
-.draw-controls { left:320px; }
-
 .lifted {
   box-shadow:0 1px 2px rgba(0,0,0,0.20);
   }
@@ -16,22 +14,13 @@
 .sidebar-container { width:320px; }
 .sidebar-container .keyline-top { border-color:rgba(0,0,0,0.4); }
 
-.sidebar-container .scroll::-webkit-scrollbar {
-  width:8px;
-  height:8px;
-  border-left:0;
-  background:rgba(255,255,255,0.1);
+.fill-darkgrey {
+  background-color:#555;
   }
-.scroll-styled .scroll::-webkit-scrollbar:hover {
-  background:rgba(255,255,255,0.15);
-  }
-.scroll-styled .scroll::-webkit-scrollbar-track {
-  background:none;
-  }
-.scroll-styled .scroll::-webkit-scrollbar-thumb {
-  /*background:rgba(255,255,255,0.1);*/
-  background-color:red;
-  border-radius:0;
+
+.listings-header {
+  -webkit-box-shadow:0 2px 4px 0 rgba(0,0,0,0.10);
+          box-shadow:0 2px 4px 0 rgba(0,0,0,0.10);
   }
 
 /* Utils */
@@ -60,7 +49,7 @@
   }
 .checkbox-pill input[type=checkbox] + .button,
 .checkbox-pill input[type=checkbox]:checked + .button {
-  background-color:#555;
+  background-color:transparent;
   }
 .checkbox-pill input[type=checkbox] + .button:hover,
 .checkbox-pill input[type=checkbox]:checked + .button:hover {
@@ -110,7 +99,7 @@ button.listing {
   }
   button.listing.active,
   button.listing:hover {
-    background-color:rgba(0,0,0,0.05);
+    background-color:rgba(0,0,0,0.1);
     }
   button.listing.active p {
     font-family:'Open Sans Bold', sans-serif;

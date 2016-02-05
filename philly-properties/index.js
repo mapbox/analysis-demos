@@ -185,7 +185,7 @@ function buildListings(listings) {
   for (var prop in listings) {
 
     var section = document.createElement('div');
-    section.className = 'keyline-bottom listing-group';
+    section.className = 'listing-group';
 
     section.setAttribute('data-properties', listings[prop].length);
     layers.forEach(function(l) {
@@ -213,7 +213,6 @@ function buildListings(listings) {
       item.innerHTML = listingTemplate(feature);
       section.appendChild(item);
 
-      /*
       item.querySelector('button').addEventListener('click', function(e) {
         var elements = $listings.querySelectorAll('button');
 
@@ -222,14 +221,30 @@ function buildListings(listings) {
         });
 
         e.target.classList.add('active');
-        featureSelection(feature);
+
+        map.flyTo({
+          center: feature.geometry.coordinates,
+          zoom: 18
+        });
+
+        popup
+          .remove()
+          .setLngLat(feature.geometry.coordinates)
+          .setHTML(feature.properties.address)
+          .addTo(map);
       });
 
       item.querySelector('button').addEventListener('mouseover', function() {
-        featureHover(feature);
+        popup
+          .remove()
+          .setLngLat(feature.geometry.coordinates)
+          .setHTML(feature.properties.address)
+          .addTo(map);
       });
-      */
 
+      item.querySelector('button').addEventListener('mouseout', function() {
+        popup.remove()
+      });
     });
 
     $listings.appendChild(section);
@@ -243,12 +258,13 @@ function buildHeader(container, section) {
   var fill = section.getAttribute('data-fill');
 
   var title = document.createElement('strong');
-  title.className = 'small space-right0';
+  title.className = 'small quiet space-right0';
   title.textContent = category;
 
-  var sub = document.createElement('span');
-  sub.className = 'quiet small';
-  sub.textContent = properties + ' properties';
+  var n = parseInt(properties, 10);
+  var sub = document.createElement('strong');
+  sub.className = 'small dark';
+  sub.textContent = n.toLocaleString() + ' properties';
 
   container.innerHTML = '';
   container.style.backgroundColor = fill;
@@ -275,61 +291,6 @@ function redraw(e) {
 }
 
 circle.on('result', redraw);
-
-/*
-map.on('mousemove', function(e) {
-  map.featuresAt(e.point, {
-    radius: 2.5, // half the marker size (5px).
-    includeGeometry: true,
-    layer: layers.map(function(layer, i) {
-      return 'poi-' + i;
-    })
-  }, function(err, features) {
-    map.getCanvas().style.cursor = (!err && features.length) ? 'pointer' : '';
-
-    if (err || !features.length) {
-      popup.remove();
-      return;
-    }
-
-    var feature = features[0];
-    var p = feature.properties;
-    var popupContainer = document.createElement('div');
-
-    var items = [
-      ['Address', p.address],
-      ['Category', layers[p.category][2]],
-      ['Price', p.price]
-    ];
-
-    if (p.stories) items.push(['Stories', p.stories]);
-    if (p.rooms) items.push(['Rooms', p.rooms]);
-    if (p.bedrooms) items.push(['Bedrooms', p.bedrooms]);
-    if (p.bathrooms) items.push(['Bathrooms', p.bathrooms]);
-
-    items.forEach(function(d) {
-      var item = document.createElement('div');
-      var label = document.createElement('strong');
-      label.className = 'space-right0';
-      label.textContent = d[0];
-
-      var value = document.createElement('div');
-      value.className = 'inline capitalize';
-      value.textContent = d[1];
-
-      item.appendChild(label);
-      item.appendChild(value);
-      popupContainer.appendChild(item);
-    });
-
-    // Initialize a popup and set its coordinates
-    // based on the feature found.
-    popup.setLngLat(feature.geometry.coordinates)
-      .setHTML(popupContainer.innerHTML)
-      .addTo(map);
-  });
-});
-*/
 
 // Radius changer
 $radius.querySelector('input').addEventListener('input', function(e) {
