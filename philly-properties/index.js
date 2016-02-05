@@ -4,6 +4,10 @@
 /* eslint-disable new-cap */
 mapboxgl.accessToken = process.env.MapboxAccessToken;
 
+var fs = require('fs');
+var path = require('path');
+
+var template = require('lodash.template');
 var Circle = require('./circle');
 
 // Set bounds to Philadelphia
@@ -12,6 +16,9 @@ var bounds = [
   [-75.63195500381617, 39.76055866429846], // Southwest coordinates
   [-74.6075343956525, 40.122534817620846] // Northeast coordinates
 ];
+
+// Templates
+var listingTemplate = template(fs.readFileSync(path.join(__dirname, '/templates/listing.html'), 'utf8'));
 
 var map = new mapboxgl.Map({
   container: 'map',
@@ -25,7 +32,9 @@ var map = new mapboxgl.Map({
 
 var $radius = document.getElementById('radius');
 var $radiusValue = document.getElementById('radius-value');
-var radius = 100, position = map.project(center);
+var radius = 100;
+var position = map.project(center);
+var error;
 
 var circle = new Circle(map.getContainer(), {
   radius: radius,
@@ -41,6 +50,7 @@ var popup = new mapboxgl.Popup({
 });
 
 var filterGroup = document.getElementById('filter-group');
+var listings = document.getElementById('listings');
 
 var geojson = {
   type: 'FeatureCollection',
@@ -49,12 +59,30 @@ var geojson = {
 
 var layers = [
   [0, '#27b691', 'Residential'],
-  [1, '#1279b9', 'Commecial'],
+  [1, '#ed5299', 'Commecial'],
   [2, '#484896', 'Hotels & Apartments'],
-  [3, '#ed4f3e', 'Store with dwelling'],
-  [4, '#f6d845', 'Vacant land'],
-  [5, '#ed5299', 'Industrial']
+  [3, '#ec3649', 'Store with dwelling'],
+  [4, '#f06f42', 'Vacant land'],
+  [5, '#f6d845', 'Industrial']
 ];
+
+function loading(state) {
+  document.getElementById('sidebar').classList.toggle('loading', state);
+}
+
+function emitError(msg) {
+  window.clearTimeout(error);
+  var $error = document.getElementById('error');
+
+  $error.classList.add('pad1', 'active');
+  $error.textContent = msg;
+
+  // Emit error for 3 seconds.
+  error = window.setTimeout(function() {
+    $error.classList.remove('pad1', 'active');
+    $error.textContent = '';
+  }, 3000);
+}
 
 function initialize() {
   document.body.classList.remove('loading');
@@ -92,7 +120,7 @@ function initialize() {
         'circle-color': layer[1],
         'circle-radius': {
           base: 1,
-          stops: [[13, 1], [15, 2], [17, 5]]
+          stops: [[13, 1], [15, 1.5], [17, 3]]
         }
       },
       filter: ['==', 'category', layer[0]]
@@ -123,28 +151,6 @@ function initialize() {
     });
   });
 
-  // Radius control
-  var draw = document.createElement('button');
-  draw.id = 'draw';
-  draw.className = 'icon point button round';
-  draw.title = 'Draw';
-
-  draw.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (draw.classList.contains('active')) {
-      draw.classList.remove('active');
-      map.dragPan.enable();
-      circle.disable();
-    } else {
-      draw.classList.add('active');
-      map.dragPan.disable();
-      circle.enable();
-    }
-  });
-
-  document.getElementById('draw-controls').appendChild(draw);
   $radius.querySelector('input').value = radius;
   $radiusValue.textContent = radius;
 }
@@ -154,6 +160,8 @@ map.on('source.load', function(e) {
 });
 
 function redraw(e) {
+  loading(true);
+  listings.innerHTML = '';
   map.dragPan.enable();
   if (e && e.end) position = e.end;
   map.featuresAt(position, {
@@ -164,6 +172,37 @@ function redraw(e) {
     if (err || !features.length) return;
     geojson.features = features;
     map.getSource('within').setData(geojson);
+
+    features.forEach(function(feature) {
+      console.log(feature);
+
+      layers.forEach(function(l) {
+        if (l[0] === feature.properties.category) feature.fill = l[1];
+      });
+
+      var item = document.createElement('div');
+      item.innerHTML = listingTemplate(feature);
+      listings.appendChild(item);
+
+      /*
+      item.querySelector('button').addEventListener('click', function(e) {
+        var elements = $listings.querySelectorAll('button');
+
+        Array.prototype.forEach.call(elements, function(el) {
+          el.classList.remove('active');
+        });
+
+        e.target.classList.add('active');
+        featureSelection(feature);
+      });
+
+      item.querySelector('button').addEventListener('mouseover', function() {
+        featureHover(feature);
+      });
+      */
+
+      loading(false);
+    });
   });
 }
 
