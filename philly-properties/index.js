@@ -35,10 +35,12 @@ var $radius = document.getElementById('radius');
 var $radiusValue = document.getElementById('radius-value');
 var $filterGroup = document.getElementById('filter-group');
 var $listings = document.getElementById('listings');
+var $listingsHeader = document.getElementById('listings-header');
 
 var radius = 100;
 var position = map.project(center);
 var error;
+var categories = [];
 
 var circle = new Circle(map.getContainer(), {
   radius: radius,
@@ -148,8 +150,14 @@ function initialize() {
 
     // When the checkbox changes, update the visibility of the layer.
     input.addEventListener('change', function(e) {
-      map.setLayoutProperty(layerID, 'visibility',
-        e.target.checked ? 'visible' : 'none');
+      if (e.target.checked && categories.indexOf(i) >= 0) {
+        categories.splice(categories.indexOf(i), 1);
+      } else {
+        categories.push(i);
+      }
+
+      map.setLayoutProperty(layerID, 'visibility', e.target.checked ? 'visible' : 'none');
+      buildListings(geojson.features);
     });
   });
 
@@ -160,6 +168,65 @@ function initialize() {
 map.on('source.load', function(e) {
   if (e.source.id === 'philly') window.setTimeout(redraw, 1000);
 });
+
+function buildListings(listings) {
+  if (categories.length) {
+    listings = listings.filter(function(d) {
+      return categories.indexOf(d.properties.category) === -1;
+    });
+  }
+
+  listings = groupBy(listings, function(d) {
+    return d.properties.category;
+  });
+
+  for (var prop in listings) {
+
+    var section = document.createElement('div');
+    section.className = 'keyline-bottom listing-group';
+
+    section.setAttribute('data-properties', listings[prop].length);
+    layers.forEach(function(l) {
+      if (l[0] === parseInt(prop, 10)) {
+        section.setAttribute('data-fill', l[1]);
+        section.setAttribute('data-category', l[2]);
+      }
+    });
+
+    if (prop === Object.keys(listings)[0]) sectionHeading(section);
+
+    listings[prop].forEach(function(feature) {
+      layers.forEach(function(l) {
+        if (l[0] === feature.properties.category) feature.fill = l[1];
+      });
+
+      var item = document.createElement('div');
+      item.innerHTML = listingTemplate(feature);
+      section.appendChild(item);
+
+      /*
+      item.querySelector('button').addEventListener('click', function(e) {
+        var elements = $listings.querySelectorAll('button');
+
+        Array.prototype.forEach.call(elements, function(el) {
+          el.classList.remove('active');
+        });
+
+        e.target.classList.add('active');
+        featureSelection(feature);
+      });
+
+      item.querySelector('button').addEventListener('mouseover', function() {
+        featureHover(feature);
+      });
+      */
+
+    });
+
+    $listings.appendChild(section);
+    loading(false);
+  }
+}
 
 function redraw(e) {
   loading(true);
@@ -173,67 +240,9 @@ function redraw(e) {
   }, function(err, features) {
     if (err) return emitError(err.message);
     if (!features.length) return emitError('No properties found');
-
-    geojson.features = features;
+    var listings = geojson.features = features;
     map.getSource('within').setData(geojson);
-
-    features = groupBy(features, function(d) {
-      return d.properties.category;
-    });
-
-    for (var prop in features) {
-      var hood = document.createElement('div');
-      hood.className = 'space-bottom1 keyline-bottom listing-group';
-
-      var heading = document.createElement('header');
-      heading.className = 'pad1y pad2x';
-
-      var title = document.createElement('strong');
-      title.className = 'small space-right0';
-
-      layers.forEach(function(l) {
-        if (l[0] === parseInt(prop, 10)) title.textContent = l[2];
-      });
-
-      var sub = document.createElement('span');
-      sub.className = 'quiet small';
-      sub.textContent = features[prop].length + ' properties';
-
-      heading.appendChild(title);
-      heading.appendChild(sub);
-      hood.appendChild(heading);
-
-      features[prop].forEach(function(feature) {
-        layers.forEach(function(l) {
-          if (l[0] === feature.properties.category) feature.fill = l[1];
-        });
-
-        var item = document.createElement('div');
-        item.innerHTML = listingTemplate(feature);
-        hood.appendChild(item);
-
-        /*
-        item.querySelector('button').addEventListener('click', function(e) {
-          var elements = $listings.querySelectorAll('button');
-
-          Array.prototype.forEach.call(elements, function(el) {
-            el.classList.remove('active');
-          });
-
-          e.target.classList.add('active');
-          featureSelection(feature);
-        });
-
-        item.querySelector('button').addEventListener('mouseover', function() {
-          featureHover(feature);
-        });
-        */
-
-      });
-
-      $listings.appendChild(hood);
-      loading(false);
-    }
+    buildListings(listings);
   });
 }
 
@@ -294,6 +303,7 @@ map.on('mousemove', function(e) {
 });
 */
 
+// Radius changer
 $radius.querySelector('input').addEventListener('input', function(e) {
   $radiusValue.textContent = e.target.value;
   radius = e.target.value;
@@ -302,11 +312,53 @@ $radius.querySelector('input').addEventListener('input', function(e) {
 
 $radius.querySelector('input').addEventListener('change', redraw);
 
-$listings.addEventListener('scroll', function(e) {
-  var sections = $listings.querySelectorAll('.listing-group');
-  Array.prototype.forEach.call(sections, function(el, i) {
-    var target = el.target;
+// Changing section header on scroll
+// depending on section currently in view.
+function offset(el) {
+  var rect = el.getBoundingClientRect();
+  return {
+    top: rect.top + document.body.scrollTop,
+    left: rect.left + document.body.scrollLeft
+  };
+}
 
+function sectionHeading(section) {
+  var properties = section.getAttribute('data-properties');
+  var category = section.getAttribute('data-category');
+  var fill = section.getAttribute('data-fill');
+
+  var title = document.createElement('strong');
+  title.className = 'small space-right0';
+  title.textContent = category;
+
+  var sub = document.createElement('span');
+  sub.className = 'quiet small';
+  sub.textContent = properties + ' properties';
+
+  $listingsHeader.innerHTML = '';
+  $listingsHeader.style.backgroundColor = fill;
+  $listingsHeader.appendChild(title);
+  $listingsHeader.appendChild(sub);
+}
+
+var sectionHeadingPosition = offset($listingsHeader);
+var currentCategory;
+
+$listings.addEventListener('scroll', function() {
+  var sections = $listings.querySelectorAll('.listing-group');
+  Array.prototype.forEach.call(sections, function(el, i, d) {
+    var next = d[i + 1];
+    if (next) {
+      if (sectionHeadingPosition.top >= offset(el).top &&
+         sectionHeadingPosition.top <= offset(next).top) {
+        var category = el.getAttribute('data-category');
+        if (category !== currentCategory) {
+          sectionHeading(el);
+          currentCategory = category;
+        }
+        return;
+      }
+    }
   });
 });
 
