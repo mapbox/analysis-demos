@@ -185,12 +185,14 @@ function buildListings(listings) {
 
   for (var prop in listings) {
 
+    var fill = '#ddd';
     var section = document.createElement('div');
     section.className = 'listing-group';
 
     section.setAttribute('data-properties', listings[prop].length);
     layers.forEach(function(l) {
       if (l[0] === parseInt(prop, 10)) {
+        fill = l[1];
         section.setAttribute('data-fill', l[1]);
         section.setAttribute('data-category', l[2]);
       }
@@ -206,10 +208,7 @@ function buildListings(listings) {
     }
 
     listings[prop].forEach(function(feature) {
-      layers.forEach(function(l) {
-        if (l[0] === feature.properties.category) feature.fill = l[1];
-      });
-
+      feature.fill = fill;
       var item = document.createElement('div');
       item.innerHTML = listingTemplate(feature);
       section.appendChild(item);
@@ -239,6 +238,14 @@ function buildListings(listings) {
     $listings.appendChild(section);
     loading(false);
   }
+}
+
+function fill(d) {
+  var v;
+  layers.forEach(function(layer) {
+    if (layer[0] === d.properties.category) v = layer[1];
+  });
+  return v;
 }
 
 function buildPopup(d) {
@@ -326,6 +333,32 @@ $listings.addEventListener('scroll', function() {
         return;
       }
     }
+  });
+});
+
+map.on('click', function(e) {
+  map.featuresAt(e.point, {
+    radius: 5,
+    includeGeometry: true,
+    layer: layers.map(function(d, i) {
+      return 'poi-' + i;
+    })
+  }, function(err, features) {
+    if (err || !features.length) return;
+    var feature = features[0];
+    feature.fill = fill(feature);
+    buildPopup(feature);
+  });
+});
+
+map.on('mousemove', function(e) {
+  map.featuresAt(e.point, {
+    radius: 5,
+    layer: layers.map(function(d, i) {
+      return 'poi-' + i;
+    })
+  }, function(err, features) {
+    map.getCanvas().style.cursor = (!err && features.length) ? 'pointer' : '';
   });
 });
 
