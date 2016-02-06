@@ -65,6 +65,7 @@ Circle.prototype._onDown = function(e) {
 
   this._active = false;
   this._startPixel = this._getCoordFromEvent(e);
+  if (!this._el.classList.contains('active')) this._el.classList.add('active');
   this.fire('start', {
     start: this._startPixel
   });
@@ -96,8 +97,8 @@ Circle.prototype.draw = function() {
   this._el.style.boxShadow = '0 0 0 ' + this._radius + 'px ' + this._fillRadius;
   this._el.style.top = 0;
   this._el.style.left = 0;
-  this._el.style.width = '20px';
-  this._el.style.height = '20px';
+  this._el.style.width = '30px';
+  this._el.style.height = '30px';
   var pos = 'translate(' + this._x + 'px,' + this._y + 'px)';
   this._el.style.transform = pos;
   this._el.style.WebkitTransform = pos;
@@ -142,6 +143,7 @@ Circle.prototype._onMouseUp = function() {
 
 Circle.prototype._onUp = function() {
   if (!this._active) return;
+  if (this._el.classList.contains('active')) this._el.classList.remove('active');
   this._active = false;
   this.fire('result', {
     start: this._startPixel,

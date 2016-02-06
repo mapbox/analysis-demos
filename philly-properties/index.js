@@ -20,6 +20,7 @@ var bounds = [
 
 // Templates
 var listingTemplate = template(fs.readFileSync(path.join(__dirname, '/templates/listing.html'), 'utf8'));
+var popupTemplate = template(fs.readFileSync(path.join(__dirname, '/templates/popup.html'), 'utf8'));
 
 var map = new mapboxgl.Map({
   container: 'map',
@@ -227,29 +228,25 @@ function buildListings(listings) {
           zoom: 18
         });
 
-        popup
-          .remove()
-          .setLngLat(feature.geometry.coordinates)
-          .setHTML(feature.properties.address)
-          .addTo(map);
+        buildPopup(feature);
       });
 
       item.querySelector('button').addEventListener('mouseover', function() {
-        popup
-          .remove()
-          .setLngLat(feature.geometry.coordinates)
-          .setHTML(feature.properties.address)
-          .addTo(map);
-      });
-
-      item.querySelector('button').addEventListener('mouseout', function() {
-        popup.remove()
+        buildPopup(feature);
       });
     });
 
     $listings.appendChild(section);
     loading(false);
   }
+}
+
+function buildPopup(d) {
+  popup
+    .remove()
+    .setLngLat(d.geometry.coordinates)
+    .setHTML(popupTemplate(d))
+    .addTo(map);
 }
 
 function buildHeader(container, section) {

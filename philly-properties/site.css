@@ -1,12 +1,13 @@
 #map { position:absolute; top:0; bottom:0; width:100%; }
+.mapboxgl-popup-content { padding:0; }
 
-.loading:before {
-  background:rgba(0,0,0,0.25);
-  }
+/* Utils */
+.punt-clicks { pointer-events:none; }
+.loading:before { background:rgba(0,0,0,0.25); }
 
-.lifted {
-  box-shadow:0 1px 2px rgba(0,0,0,0.20);
-  }
+/* Style classes */
+.fill-darkgrey { background-color:#505050; }
+.lifted { box-shadow:0 1px 2px rgba(0,0,0,0.20); }
 
 /* Sidebar container height rules */
 .full-height-container {
@@ -23,31 +24,14 @@
 .sidebar-container { width:320px; }
 .sidebar-container .keyline-top { border-color:rgba(0,0,0,0.4); }
 
-.fill-darkgrey {
-  background-color:#555;
-  }
-
-.listings-header {
+header {
+  position:relative;
+  z-index:1;
   -webkit-box-shadow:0 2px 4px 0 rgba(0,0,0,0.10);
           box-shadow:0 2px 4px 0 rgba(0,0,0,0.10);
   }
 
-/* Utils */
-.punt-clicks { pointer-events:none; }
-
-.draw-controls button {
-  background-color:transparent;
-  }
-  .draw-controls button:hover {
-    background-color:rgba(0,0,0,0.25);
-    }
-  .draw-controls button:active {
-    box-shadow:none;
-    }
-  .draw-controls button.active {
-    background-color:rgba(0,0,0,0.5);
-    box-shadow:0 0 0 3px rgba(56,135,190,0.75);
-    }
+.property-value-tab { min-width:65px; text-align:center; }
 
 /* Property type layer toggle */
 .checkbox-pill > :last-child {
@@ -62,7 +46,7 @@
   }
 .checkbox-pill input[type=checkbox] + .button:hover,
 .checkbox-pill input[type=checkbox]:checked + .button:hover {
-  background-color:#444;
+  background-color:#404040;
   }
 .checkbox-pill input[type=checkbox] + .button > span,
 .checkbox-pill input[type=checkbox] + .button:before {
@@ -85,13 +69,13 @@
   }
   .checkbox-pill input[type=checkbox]:checked + .button > span { display:inline-block }
 
-.mapboxgl-radius-browser {
-  -webkit-transition:background-color 150ms ease-out;
-          transition:background-color 150ms ease-out;
+.mapboxgl-radius-browser.active {
+  background-color:#52a1d8!important;
+  /*82, 161, 216*/
   }
-  .mapboxgl-radius-browser:hover {
-    cursor:move;
-    }
+.mapboxgl-radius-browser:hover {
+  cursor:move;
+  }
 
 /* Property listings */
 button.listing {
@@ -108,7 +92,7 @@ button.listing {
   }
   button.listing.active,
   button.listing:hover {
-    background-color:rgba(0,0,0,0.1);
+    background-color:rgba(0,0,0,0.05);
     }
   button.listing.active p {
     font-family:'Open Sans Bold', sans-serif;
@@ -138,6 +122,7 @@ button.listing {
     box-shadow:none;
     }
   .sidebar-container .round-bottom { border-radius:none; }
+
 .mapboxgl-ctrl-bottom-right,
 .mb-watermark { bottom:40%; }
 }
