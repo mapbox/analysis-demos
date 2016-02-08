@@ -31,6 +31,7 @@
 
 .sidebar-container { width:320px; }
 .sidebar-container .keyline-top { border-color:rgba(0,0,0,0.4); }
+.mb-watermark { left:320px; }
 
 header {
   position:relative;
@@ -132,5 +133,5 @@ button.listing {
   .sidebar-container .round-bottom { border-radius:none; }
 
 .mapboxgl-ctrl-bottom-right,
-.mb-watermark { bottom:40%; }
+.mb-watermark { bottom:40%; left:0; }
 }

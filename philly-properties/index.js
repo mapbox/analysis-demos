@@ -104,7 +104,7 @@ function initialize() {
 
   map.addSource('philly', {
     type: 'vector',
-    url: 'mapbox://tristen.2so304hr'
+    url: 'mapbox://mapbox.13m9czcc'
   });
 
   map.addLayer({
@@ -196,7 +196,7 @@ function buildListings(listings) {
 
     var fill = '#ddd';
     var section = document.createElement('div');
-    section.className = 'listing-group';
+    section.className = 'property-group';
 
     section.setAttribute('data-properties', listings[prop].length);
     layers.forEach(function(l) {
@@ -288,8 +288,9 @@ function buildHeader(container, section) {
 function redraw(e) {
   popup.remove();
   loading(true);
-  $listings.innerHTML = '';
+  $listingsHeader.innerHTML = $listings.innerHTML = '';
   map.dragPan.enable();
+
   if (e && e.end) position = e.end;
   map.featuresAt({
     x: position.x + (innerRadius / 2),
@@ -301,7 +302,11 @@ function redraw(e) {
   }, function(err, features) {
     if (err) return emitError(err.message);
     if (!features.length) return emitError('No properties found');
-    var listings = geojson.features = features;
+    var listings = geojson.features = features.map(function(d, i) {
+      d.properties.id = i;
+      return d;
+    });
+
     map.getSource('within').setData(geojson);
     buildListings(listings);
   });
@@ -332,7 +337,7 @@ var sectionHeadingPosition = offset($listingsHeader);
 var currentCategory;
 
 $listings.addEventListener('scroll', function() {
-  var sections = $listings.querySelectorAll('.listing-group');
+  var sections = $listings.querySelectorAll('.property-group');
   Array.prototype.forEach.call(sections, function(el, i, d) {
     var next = d[i + 1];
     if (next) {
@@ -361,6 +366,17 @@ map.on('click', function(e) {
     var feature = features[0];
     feature.fill = fill(feature);
     buildPopup(feature);
+
+    // Jump to its entry in the sidebar listings
+    var target = document.getElementById('property-' + feature.properties.id);
+    if (target) {
+      $listings.scrollTop = target.offsetTop - $listings.offsetTop;
+
+      // Remove any previously active listings
+      Array.prototype.forEach.call($listings.querySelectorAll('button'), function(el) {
+        el.classList.toggle('active', el.id === target.id);
+      });
+    }
   });
 });
 
@@ -397,8 +413,8 @@ function resolution(r) {
   var gr = Math.cos((lat * Math.PI / 180)) *  earthCircumference / (256 * Math.pow(2, z));
 
   return {
-    meters: gr * radius,
-    miles: (gr * radius) / 1609.344 // meters in a mile
+    meters: gr * r,
+    miles: (gr * r) / 1609.344 // meters in a mile
   };
 }
 
