@@ -12,14 +12,17 @@
 
 /* Sidebar container height rules */
 .full-height-container {
+  display:-webkit-box;
   display:flex;
+  -webkit-box-orient:vertical;
   flex-direction:column;
   height:100%;
   }
   .full-height-container .scroll {
-    flex:1;
     overflow-y:scroll;
     min-height:0;
+    -webkit-box-flex:1;
+                flex:1;
     }
 
 .sidebar-container { width:320px; }

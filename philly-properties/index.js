@@ -278,6 +278,7 @@ function buildHeader(container, section) {
 }
 
 function redraw(e) {
+  popup.remove();
   loading(true);
   $listings.innerHTML = '';
   map.dragPan.enable();
