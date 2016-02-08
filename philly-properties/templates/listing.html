@@ -1,0 +1,27 @@
+<button id='property-<%- properties.id %>' class='listing'>
+  <div class='punt-clicks keyline-bottom contain'>
+    <div class='pad2x pad1y'>
+      <h4 class='space-top0'>
+        <span class='capitalize'><%- properties.address.toLowerCase() %> </span>
+      </h4>
+      <% if (properties.rooms) { %>
+        <span class='quiet'><%- properties.rooms %> rooms</span>
+      <% } %>
+      <% if (properties.stories) { %>
+        <span class='quiet'><%- properties.stories %> stories</span>
+      <% } %>
+      <% if (properties.bedrooms) { %>
+        <span class='quiet'><%- properties.bedrooms %> bedrooms</span>
+      <% } %>
+      <% if (properties.bathrooms) { %>
+        <span class='quiet'><%- properties.bathrooms %> bathrooms</span>
+      <% } %>
+    </div>
+
+    <div class='pin-topright pad1x'>
+      <span class='pad0 dark inline property-value-tab round-bottom' style='background-color:<%- fill %>;'>
+        <h4><%- properties.price %></h4>
+      </span>
+    </div>
+  </div>
+</button>
