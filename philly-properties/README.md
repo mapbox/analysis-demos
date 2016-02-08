@@ -3,7 +3,7 @@ Evaluate properties in Philadelphia
 
 Draw a shape on a map to query features inside it.
 
-![demo](http://i.imgur.com/A3gj4Qo.gif)
+![demo](http://i.imgur.com/RGbMcRH.gif)
 
 __Demo:__ https://www.mapbox.com/analysis-demos/philly-properties/
 
