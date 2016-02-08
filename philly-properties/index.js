@@ -94,6 +94,14 @@ function emitError(msg) {
 function initialize() {
   document.body.classList.remove('loading');
 
+  // Prepend data attribution
+  var credit = document.createElement('a');
+  credit.href = 'https://www.opendataphilly.org/dataset/opa-property-assessments';
+  credit.className = 'fill-darken2 pad0x inline color-white';
+  credit.target = '_target';
+  credit.textContent = 'Data provided by OpenDataPhilly';
+  map.getContainer().querySelector('.mapboxgl-ctrl-bottom-right').appendChild(credit);
+
   map.addSource('philly', {
     type: 'vector',
     url: 'mapbox://tristen.2so304hr'

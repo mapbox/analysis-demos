@@ -1,6 +1,10 @@
 #map { position:absolute; top:0; bottom:0; width:100%; }
+
+/* mapboxgl overrides */
 .mapboxgl-popup { margin-top:-30px; }
 .mapboxgl-popup-content { min-width:180px; padding:0; }
+.mapboxgl-ctrl-bottom-right a { color:#fff; }
+.mapboxgl-ctrl-bottom-right a:hover { text-decoration:underline; }
 
 /* Utils */
 .punt-clicks { pointer-events:none; }
