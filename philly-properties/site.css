@@ -132,6 +132,5 @@ button.listing {
     }
   .sidebar-container .round-bottom { border-radius:none; }
 
-.mapboxgl-ctrl-bottom-right,
-.mb-watermark { bottom:40%; left:0; }
+.mapboxgl-ctrl-bottom-right { bottom:40%; }
 }
