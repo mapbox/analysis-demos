@@ -39,11 +39,13 @@ var $listings = document.getElementById('listings');
 var $listingsHeader = document.getElementById('listings-header');
 
 var radius = 100;
+var innerRadius = 30;
 var position = map.project(center);
 var error;
 var categories = [];
 
 var circle = new Circle(map.getContainer(), {
+  innerRadius: innerRadius,
   radius: radius,
   position: position,
   fill: '#3887be',
@@ -104,7 +106,6 @@ function initialize() {
     interactive: true,
     'source-layer': 'original',
     paint: {
-      'circle-color': 'rgba(0,0,0,0)',
       'circle-radius': 0
     }
   });
@@ -163,7 +164,7 @@ function initialize() {
   });
 
   $radius.querySelector('input').value = radius;
-  $radiusValue.textContent = radius;
+  updateRadiusLabel(radius);
 }
 
 map.on('source.load', function(e) {
@@ -281,7 +282,10 @@ function redraw(e) {
   $listings.innerHTML = '';
   map.dragPan.enable();
   if (e && e.end) position = e.end;
-  map.featuresAt(position, {
+  map.featuresAt({
+    x: position.x + (innerRadius / 2),
+    y: position.y + (innerRadius / 2)
+  }, {
     radius: radius,
     includeGeometry: true,
     layer: ['philly']
@@ -298,7 +302,7 @@ circle.on('result', redraw);
 
 // Radius changer
 $radius.querySelector('input').addEventListener('input', function(e) {
-  $radiusValue.textContent = e.target.value;
+  updateRadiusLabel(e.target.value);
   radius = e.target.value;
   circle.setRadius(radius);
 });
@@ -361,5 +365,34 @@ map.on('mousemove', function(e) {
     map.getCanvas().style.cursor = (!err && features.length) ? 'pointer' : '';
   });
 });
+
+function updateRadiusLabel(r) {
+  var res = resolution(r);
+  $radiusValue.textContent = res.miles > 1 ?
+    res.miles.toFixed(1) + ' mi.' :
+    res.meters.toFixed() + ' m';
+}
+
+/*
+ * Calculate ground resolution by a given radius
+ * From https://msdn.microsoft.com/en-us/library/bb259689.aspx
+ * cos(latitude * pi/180) * earth circumference / map width
+ *
+ * @param {numbers} r current radius in pixels
+ * @returns {object} { meters:n, miles:n }
+ */
+function resolution(r) {
+  var z = map.getZoom();
+  var lat = map.unproject(position).lat;
+  var earthCircumference = 2 * Math.PI * 6378137; // Earths radius in meters
+  var gr = Math.cos((lat * Math.PI / 180)) *  earthCircumference / (256 * Math.pow(2, z));
+
+  return {
+    meters: gr * radius,
+    miles: (gr * radius) / 1609.344 // meters in a mile
+  };
+}
+
+map.on('moveend', updateRadiusLabel.bind(this, radius));
 
 map.on('load', initialize);

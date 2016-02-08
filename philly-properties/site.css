@@ -1,5 +1,5 @@
 #map { position:absolute; top:0; bottom:0; width:100%; }
-.mapboxgl-popup-content { padding:0; }
+.mapboxgl-popup-content { min-width:180px; padding:0; }
 
 /* Utils */
 .punt-clicks { pointer-events:none; }

@@ -16,6 +16,7 @@ var EventEmitter = require('events').EventEmitter;
 var Circle = function(container, options) {
   options = options || {};
 
+  this._innerRadius = options.innerRadius || 30;
   this._radius = options.radius || 100;
   this._fillRadius = options.fillRadius || 'rgba(0,0,0,0.1)';
   this._fill = options.fill || 'rgba(0,0,0,0.1)';
@@ -47,8 +48,8 @@ Circle.prototype._getCoordFromEvent = function(e) {
   var rect = this._container.getBoundingClientRect();
   e = e.touches ? e.touches[0] : e;
   return {
-    x: e.clientX - rect.left,
-    y: e.clientY - rect.top
+    x: (e.clientX - rect.left),
+    y: (e.clientY - rect.top)
   };
 };
 
@@ -94,11 +95,11 @@ Circle.prototype.draw = function() {
   this._el.style.borderWidth = this._strokeWidth + 'px';
   this._el.style.borderRadius = '50%';
   this._el.style.display = 'absolute';
-  this._el.style.boxShadow = '0 0 0 ' + this._radius + 'px ' + this._fillRadius;
+  this._el.style.boxShadow = '0 0 0 ' + (this._radius - (this._innerRadius / 2)) + 'px ' + this._fillRadius;
   this._el.style.top = 0;
   this._el.style.left = 0;
-  this._el.style.width = '30px';
-  this._el.style.height = '30px';
+  this._el.style.width = this._innerRadius + 'px';
+  this._el.style.height = this._innerRadius + 'px';
   var pos = 'translate(' + this._x + 'px,' + this._y + 'px)';
   this._el.style.transform = pos;
   this._el.style.WebkitTransform = pos;
@@ -195,6 +196,15 @@ Circle.prototype.setFill = function(color) {
  */
 Circle.prototype.setRadius = function(n) {
   this._radius = n;
+  this.draw();
+  return this;
+};
+
+/**
+ * @param {number} n radius
+ */
+Circle.prototype.setInnerRadius = function(n) {
+  this._innerRadius = n;
   this.draw();
   return this;
 };
