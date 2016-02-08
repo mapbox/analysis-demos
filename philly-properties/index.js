@@ -9,10 +9,35 @@ var path = require('path');
 
 var template = require('lodash.template');
 var groupBy = require('lodash.groupby');
+var extend = require('xtend');
+var hashable = require('hashable').hash();
 var Circle = require('./circle');
 
+var params = {
+  center: [-75.1759, 39.9361],
+  radius: 100,
+  exclude: [],
+  zoom: 15
+};
+
+hashable.change(function(e) {
+  var hash = e.data;
+
+  // Format
+  if (hash.center) hash.center = hash.center.split(',').map(function(d) {
+    return parseFloat(d);
+  });
+  if (hash.exclude) hash.exclude = hash.exclude.split(',').map(function(d) {
+    return parseInt(d, 10);
+  });
+
+  if (hash.zoom) hash.zoom = parseFloat(hash.zoom, 10);
+  if (hash.radius) hash.radius = parseInt(hash.radius, 10);
+
+  setHash(hash);
+}).read();
+
 // Set bounds to Philadelphia
-var center = [-75.1759, 39.9361];
 var bounds = [
   [-75.63195500381617, 39.76055866429846], // Southwest coordinates
   [-74.6075343956525, 40.122534817620846] // Northeast coordinates
@@ -25,11 +50,11 @@ var popupTemplate = template(fs.readFileSync(path.join(__dirname, '/templates/po
 var map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/dark-v8',
-  center: center,
+  center: params.center,
+  zoom: params.zoom,
   maxBounds: bounds,
   minZoom: 13,
-  maxZoom: 19,
-  zoom: 15
+  maxZoom: 19
 });
 
 var $radius = document.getElementById('radius');
@@ -38,15 +63,13 @@ var $filterGroup = document.getElementById('filter-group');
 var $listings = document.getElementById('listings');
 var $listingsHeader = document.getElementById('listings-header');
 
-var radius = 100;
 var innerRadius = 30;
-var position = map.project(center);
+var position = map.project(params.center);
 var error;
-var categories = [];
 
 var circle = new Circle(map.getContainer(), {
   innerRadius: innerRadius,
-  radius: radius,
+  radius: parseInt(params.radius, 10),
   position: position,
   fill: '#3887be',
   fillRadius: 'rgba(82, 161, 216, 0.25)'
@@ -130,6 +153,9 @@ function initialize() {
       interactive: true,
       type: 'circle',
       source: 'within',
+      layout: {
+        'visibility': params.exclude.indexOf(i) >= 0 ? 'none' : 'visible'
+      },
       paint: {
         'circle-color': layer[1],
         'circle-radius': {
@@ -144,7 +170,8 @@ function initialize() {
     var input = document.createElement('input');
     input.type = 'checkbox';
     input.id = layerID;
-    input.checked = true;
+
+    input.checked = params.exclude.indexOf(i) >= 0 ? false : true;
     $filterGroup.appendChild(input);
 
     var label = document.createElement('label');
@@ -160,31 +187,36 @@ function initialize() {
 
     // When the checkbox changes, update the visibility of the layer.
     input.addEventListener('change', function(e) {
-      if (e.target.checked && categories.indexOf(i) >= 0) {
-        categories.splice(categories.indexOf(i), 1);
+      if (e.target.checked && params.exclude.indexOf(i) >= 0) {
+        params.exclude.splice(params.exclude.indexOf(i), 1);
       } else {
-        categories.push(i);
+        params.exclude.push(i);
       }
 
+      setHash({exclude: params.exclude});
       map.setLayoutProperty(layerID, 'visibility', e.target.checked ? 'visible' : 'none');
       buildListings(geojson.features);
     });
   });
 
-  $radius.querySelector('input').value = radius;
-  updateRadiusLabel(radius);
+  $radius.querySelector('input').value = params.radius;
+  updateRadiusLabel(params.radius);
 }
 
 map.on('source.load', function(e) {
   if (e.source.id === 'philly') window.setTimeout(redraw, 1000);
 });
 
+function setHash(obj) {
+  params = extend({}, params, obj);
+  hashable.set(params);
+}
+
 function buildListings(listings) {
   $listings.innerHTML = '';
-
-  if (categories.length) {
+  if (params.exclude.length) {
     listings = listings.filter(function(d) {
-      return categories.indexOf(d.properties.category) === -1;
+      return params.exclude.indexOf(d.properties.category) === -1;
     });
   }
 
@@ -291,12 +323,17 @@ function redraw(e) {
   $listingsHeader.innerHTML = $listings.innerHTML = '';
   map.dragPan.enable();
 
-  if (e && e.end) position = e.end;
+  if (e && e.end) {
+    position = e.end;
+    var c = map.unproject(position);
+    setHash({center: [c.lng, c.lat]});
+  }
+
   map.featuresAt({
     x: position.x + (innerRadius / 2),
     y: position.y + (innerRadius / 2)
   }, {
-    radius: radius,
+    radius: params.radius,
     includeGeometry: true,
     layer: ['philly']
   }, function(err, features) {
@@ -316,9 +353,9 @@ circle.on('result', redraw);
 
 // Radius changer
 $radius.querySelector('input').addEventListener('input', function(e) {
-  updateRadiusLabel(e.target.value);
-  radius = e.target.value;
-  circle.setRadius(radius);
+  setHash({radius: e.target.value });
+  updateRadiusLabel(params.radius);
+  circle.setRadius(params.radius);
 });
 
 $radius.querySelector('input').addEventListener('change', redraw);
@@ -418,6 +455,9 @@ function resolution(r) {
   };
 }
 
-map.on('moveend', updateRadiusLabel.bind(this, radius));
+map.on('moveend', function() {
+  setHash({ zoom: map.getZoom().toFixed(2) });
+  updateRadiusLabel(params.radius);
+});
 
 map.on('load', initialize);
