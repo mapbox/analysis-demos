@@ -48,8 +48,8 @@ Circle.prototype._getCoordFromEvent = function(e) {
   var rect = this._container.getBoundingClientRect();
   e = e.touches ? e.touches[0] : e;
   return {
-    x: (e.clientX - rect.left),
-    y: (e.clientY - rect.top)
+    x: (e.clientX - rect.left - (this._innerRadius / 2)),
+    y: (e.clientY - rect.top - (this._innerRadius / 2))
   };
 };
 
@@ -100,26 +100,27 @@ Circle.prototype.draw = function() {
   this._el.style.left = 0;
   this._el.style.width = this._innerRadius + 'px';
   this._el.style.height = this._innerRadius + 'px';
+  this._setPosition();
+  return this;
+};
+
+Circle.prototype._setPosition = function(coords) {
+  if (coords) {
+    this._x = coords.x;
+    this._y = coords.y;
+  }
+
   var pos = 'translate(' + this._x + 'px,' + this._y + 'px)';
   this._el.style.transform = pos;
   this._el.style.WebkitTransform = pos;
-
-  return this;
 };
 
 Circle.prototype._onMove = function(e) {
   if (!this._active) this._active = true;
-
-  this._currentPixel = this._getCoordFromEvent(e);
-
   if (!this._el) this.draw();
 
-  this._x = this._currentPixel.x;
-  this._y = this._currentPixel.y;
-  var pos = 'translate(' + this._x + 'px,' + this._y + 'px)';
-
-  this._el.style.transform = pos;
-  this._el.style.WebkitTransform = pos;
+  this._currentPixel = this._getCoordFromEvent(e);
+  this._setPosition(this._currentPixel);
 
   this.fire('move', {
     start: this._startPixel,
@@ -129,26 +130,26 @@ Circle.prototype._onMove = function(e) {
   e.preventDefault();
 };
 
-Circle.prototype._onTouchEnd = function() {
-  this._onUp();
+Circle.prototype._onTouchEnd = function(e) {
+  this._onUp(e);
   document.removeEventListener('touchmove', this._onMove);
   document.removeEventListener('touchend', this._onTouchEnd);
 };
 
-Circle.prototype._onMouseUp = function() {
-  this._onUp();
+Circle.prototype._onMouseUp = function(e) {
+  this._onUp(e);
   document.removeEventListener('mousemove', this._onMove);
   document.removeEventListener('mouseup', this._onMouseUp);
   document.removeEventListener('keydown', this._onKeyDown);
 };
 
-Circle.prototype._onUp = function() {
+Circle.prototype._onUp = function(e) {
   if (!this._active) return;
   if (this._el.classList.contains('active')) this._el.classList.remove('active');
   this._active = false;
   this.fire('result', {
     start: this._startPixel,
-    end: this._currentPixel
+    end: this._getCoordFromEvent(e)
   });
 };
 

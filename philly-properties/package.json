@@ -27,5 +27,9 @@
     "eslint": "^1.10.3",
     "neat-csv": "^1.1.0",
     "uglify-js": "^2.6.1"
+  },
+  "dependencies": {
+    "turf-distance": "^1.1.0",
+    "turf-point": "^2.0.1"
   }
 }

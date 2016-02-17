@@ -9,6 +9,8 @@ var path = require('path');
 
 var template = require('lodash.template');
 var groupBy = require('lodash.groupby');
+var distance = require('turf-distance');
+var point = require('turf-point');
 var extend = require('xtend');
 var hashable = require('hashable').hash();
 var Circle = require('./circle');
@@ -165,7 +167,7 @@ function initialize() {
       },
       filter: ['==', 'category', layer[0]]
 
-    }, 'place_label_city_small_s');
+    }, 'road-label-sm');
 
     var input = document.createElement('input');
     input.type = 'checkbox';
@@ -204,7 +206,13 @@ function initialize() {
 }
 
 map.on('source.load', function(e) {
-  if (e.source.id === 'philly') window.setTimeout(redraw, 1000);
+  if (e.source.id === 'philly') {
+    position = {
+      x: position.x + innerRadius / 2,
+      y: position.y + innerRadius / 2
+    };
+    window.setTimeout(redraw, 2000);
+  }
 });
 
 function setHash(obj) {
@@ -265,7 +273,7 @@ function buildListings(listings) {
 
         map.flyTo({
           center: feature.geometry.coordinates,
-          zoom: 18
+          zoom: 17
         });
 
         buildPopup(feature);
@@ -324,22 +332,33 @@ function redraw(e) {
   map.dragPan.enable();
 
   if (e && e.end) {
-    position = e.end;
+    position = {
+      x: e.end.x + innerRadius / 2,
+      y: e.end.y + innerRadius / 2
+    };
+
     var c = map.unproject(position);
     setHash({center: [c.lng, c.lat]});
   }
 
-  map.featuresAt({
-    x: position.x + (innerRadius / 2),
-    y: position.y + (innerRadius / 2)
-  }, {
-    radius: params.radius,
+  var r = parseInt(params.radius, 10);
+  var ne = new mapboxgl.Point(position.x + r, position.y - r);
+  var sw = new mapboxgl.Point(position.x - r, position.y + r);
+
+  map.featuresIn([ne, sw], {
     includeGeometry: true,
-    layer: ['philly']
+    layer: 'philly'
   }, function(err, features) {
     if (err) return emitError(err.message);
     if (!features.length) return emitError('No properties found');
-    var listings = geojson.features = features.map(function(d, i) {
+
+    var center = map.unproject(position);
+    var radius = resolution(parseInt(params.radius, 10), position).miles;
+
+    // Filter results to the radius
+    var listings = geojson.features = features.filter(function(d) {
+      return distance(d, point([center.lng, center.lat]), 'miles') < radius;
+    }).map(function(d, i) {
       d.properties.id = i;
       return d;
     });
@@ -429,7 +448,7 @@ map.on('mousemove', function(e) {
 });
 
 function updateRadiusLabel(r) {
-  var res = resolution(r);
+  var res = resolution(r, position);
   $radiusValue.textContent = res.miles > 1 ?
     res.miles.toFixed(1) + ' mi.' :
     res.meters.toFixed() + ' m';
@@ -440,15 +459,19 @@ function updateRadiusLabel(r) {
  * From https://msdn.microsoft.com/en-us/library/bb259689.aspx
  * cos(latitude * pi/180) * earth circumference / map width
  *
- * @param {numbers} r current radius in pixels
- * @returns {object} { meters:n, miles:n }
+ * @param {number} r current radius in pixels
+ * @param {object} pos { x: n, y: n } pixel coordinates of the circle
+ * @returns {object} { meters: n, miles: n }
  */
-function resolution(r) {
+function resolution(r, pos) {
   var z = map.getZoom();
-  var lat = map.unproject(position).lat;
-  var earthCircumference = 2 * Math.PI * 6378137; // Earths radius in meters
-  var gr = Math.cos((lat * Math.PI / 180)) *  earthCircumference / (256 * Math.pow(2, z));
 
+  // pos.x = pos.x + 15;
+  // pos.y = pos.y + 15;
+
+  var lat = map.unproject(pos).lat;
+  var earthCircumference = 2 * Math.PI * 6378137; // Earths radius in meters
+  var gr = Math.cos((lat * Math.PI / 180)) *  earthCircumference / (512 * Math.pow(2, z));
   return {
     meters: gr * r,
     miles: (gr * r) / 1609.344 // meters in a mile
@@ -457,7 +480,7 @@ function resolution(r) {
 
 map.on('moveend', function() {
   setHash({ zoom: map.getZoom().toFixed(2) });
-  updateRadiusLabel(params.radius);
+  updateRadiusLabel(parseInt(params.radius, 10));
 });
 
 map.on('load', initialize);
