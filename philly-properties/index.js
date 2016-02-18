@@ -59,6 +59,15 @@ var map = new mapboxgl.Map({
   maxZoom: 19
 });
 
+if (window.location.search.indexOf('embed') !== -1) {
+  map.addControl(new mapboxgl.Navigation({
+    position: 'bottom-right'
+  }));
+
+  map.scrollZoom.disable();
+  document.body.classList.add('embed');
+}
+
 var $radius = document.getElementById('radius');
 var $radiusValue = document.getElementById('radius-value');
 var $filterGroup = document.getElementById('filter-group');

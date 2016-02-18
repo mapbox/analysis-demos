@@ -29,7 +29,7 @@
                 flex:1;
     }
 
-.sidebar-container { width:320px; }
+.sidebar-container { width:300px; }
 .sidebar-container .keyline-top { border-color:rgba(0,0,0,0.4); }
 .mb-watermark { left:320px; }
 
@@ -111,6 +111,11 @@ button.listing {
 /* mapboxgljs overrides */
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib { background-color:rgba(0,0,0,0.5); }
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib a { color:#fff; }
+
+/* Embed adjustment */
+.embed .sidebar-container { left:20px; }
+.embed .mapboxgl-ctrl-bottom-right,
+.embed .filter-container { right:20px; }
 
 /* Mobile */
 @media only screen and (max-width:640px) {
