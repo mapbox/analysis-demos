@@ -113,9 +113,9 @@ button.listing {
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib a { color:#fff; }
 
 /* Embed adjustment */
-.embed .sidebar-container { left:20px; }
+.embed .sidebar-container { left:10px; }
 .embed .mapboxgl-ctrl-bottom-right,
-.embed .filter-container { right:20px; }
+.embed .filter-container { right:10px; }
 
 /* Mobile */
 @media only screen and (max-width:640px) {
