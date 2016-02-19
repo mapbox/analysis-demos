@@ -224,6 +224,8 @@ map.on('source.load', function(e) {
   }
 });
 
+map.on('moveend', redraw);
+
 function setHash(obj) {
   params = extend({}, params, obj);
   hashable.set(params);
