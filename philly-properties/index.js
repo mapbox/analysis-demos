@@ -281,12 +281,6 @@ function buildListings(listings) {
         });
 
         e.target.classList.add('active');
-
-        map.flyTo({
-          center: feature.geometry.coordinates,
-          zoom: 17
-        });
-
         buildPopup(feature);
       });
 
