@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Explore points of interest by radius</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.13.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.13.1/mapbox-gl.css' rel='stylesheet' />
+  <link href='site.css' rel='stylesheet' />
+</head>
+<body class='clip loading'>
+<div id='map' class='map'></div>
+
+<div class='pin-topleft pin-bottomleft z1 col3 listing-container'>
+  <div class='fill-white full-height-container'>
+    <div id='filter-categories' class='checkbox-pill col12 clearfix'>
+      <input type='checkbox' id='art' checked='checked'>
+      <label for='art' class='col6 truncate icon check unround button'>Art</label>
+      <input type='checkbox' id='theatre' checked='checked'>
+      <label for='theatre' class='col6 truncate icon check unround button'>Theatre</label>
+      <input type='checkbox' id='music' checked='checked'>
+      <label for='music' class='col6 truncate icon check unround button'>Classical music</label>
+      <input type='checkbox' id='museum' checked='checked'>
+      <label for='museum' class='col6 truncate icon check unround button'>Museums</label>
+    </div>
+    <div id='listing' class='scroll round-bottom fill-light round-bottom'>
+    </div>
+  </div>
+</div>
+
+<div id='legend' class='pin-bottomright z1 pad2y legend'>
+  <div class='pad1 fill-lighten3 radius small'>
+    Drag the blue circle over points on the map to populate listings under it. Zooming on the circle increases or decreases its radius.
+  </div>
+</div>
+
+<div class='pin-bottomleft z1 margin3 mb-watermark'>
+  <div class='pad1y'>
+    <img src='mb.svg' alt='Mapbox logo' />
+  </div>
+</div>
+
+<script src='bundle.js'></script>
+</body>
+</html>

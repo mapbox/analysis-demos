@@ -1,0 +1,58 @@
+[
+  {
+    "id": "poi-museum",
+    "interactive": true,
+    "type": "symbol",
+    "source": "geojson",
+    "filter": [
+      "all",
+      ["in", "type", "museum"]
+    ],
+    "layout": {
+      "icon-image": "{type}",
+      "icon-allow-overlap": true
+    }
+  },
+  {
+    "id": "poi-theatre",
+    "interactive": true,
+    "type": "symbol",
+    "source": "geojson",
+    "filter": [
+      "all",
+      ["in", "type", "theatre"]
+    ],
+    "layout": {
+      "icon-image": "{type}",
+      "icon-allow-overlap": true
+    }
+  },
+  {
+    "id": "poi-music",
+    "interactive": true,
+    "type": "symbol",
+    "source": "geojson",
+    "filter": [
+      "all",
+      ["in", "type", "music"]
+    ],
+    "layout": {
+      "icon-image": "{type}",
+      "icon-allow-overlap": true
+    }
+  },
+  {
+    "id": "poi-art",
+    "interactive": true,
+    "type": "symbol",
+    "source": "geojson",
+    "filter": [
+      "all",
+      ["in", "type", "art"]
+    ],
+    "layout": {
+      "icon-image": "{type}",
+      "icon-allow-overlap": true
+    }
+  }
+]

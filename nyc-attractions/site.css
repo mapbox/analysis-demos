@@ -1,0 +1,97 @@
+body { margin:0; padding:0; }
+body * {
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+   -khtml-user-select:none;
+     -moz-user-select:none;
+      -ms-user-select:none;
+          user-select:none;
+  }
+#map { position:absolute; top:0; bottom:0; width:100%; }
+
+.punt-clicks { pointer-events:none; }
+
+.full-height-container { overflow:hidden; height:100%; }
+.full-height-container .scroll { overflow:auto; height:100%; }
+
+.loading:before { background-color:rgba(0,0,0,0.20); }
+
+label.button {
+  text-align:left;
+  }
+.listing-container button {
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  text-align:left;
+  margin:0;
+  font-size:12px;
+  line-height:20px;
+  width:100%;
+  padding:0;
+  height:auto;
+  }
+  .listing-container button:hover {
+    background-color:rgba(0,0,0,0.05);
+    }
+  .listing-container button.listing h4 {
+    font-family:'Open Sans Bold', sans-serif;
+    font-weight:normal;
+    }
+
+input[type='checkbox'] + label {
+  color:#fff;
+  height:50px;
+  line-height:30px;
+  }
+  input[type='checkbox'] + label:before,
+  input[type='checkbox'] + label:after {
+    margin-top:5px;
+    }
+input[type='checkbox']:checked + label,
+input[type='checkbox']:checked + label:hover { color:#fff; }
+input[type='checkbox']:checked + label:hover:before { opacity:0.75; }
+
+.checkbox-pill input[type='checkbox'] + label[for='art'],
+.checkbox-pill input[type='checkbox']:checked + label[for='art'],
+.fill-art     { background-color:#d93a92; }
+.checkbox-pill input[type='checkbox'] + label[for='music'],
+.checkbox-pill input[type='checkbox']:checked + label[for='music'],
+.fill-music   { background-color:#5a4ba2; }
+.checkbox-pill input[type='checkbox'] + label[for='theatre'],
+.checkbox-pill input[type='checkbox']:checked + label[for='theatre'],
+.fill-theatre { background-color:#ffaf01; }
+.checkbox-pill input[type='checkbox'] + label[for='museum'],
+.checkbox-pill input[type='checkbox']:checked + label[for='museum'],
+.fill-museum  { background-color:#01b788; }
+.legend { box-shadow:0 1px 2px rgba(0,0,0,0.10); }
+.legend, .mapboxgl-ctrl-attrib { width:280px; }
+
+/* Tablet */
+@media only screen and (max-width:770px) {
+  .listing-container { width:33.3333%; }
+  .mb-watermark { margin-left:33.3333%; }
+}
+
+/* Mobile */
+@media only screen and (max-width:640px) {
+  .listing-container {
+    padding:0;
+    margin:0;
+    border-radius:0;
+    top:auto;
+    height:40%;
+    z-index:10;
+    position:fixed;
+    width:100%;
+    }
+  .mb-watermark {
+    bottom:40%;
+    left:10px;
+    margin-left:0;
+    }
+  input[type='checkbox'] + label {
+    width:25%;
+    border:none;
+    }
+}

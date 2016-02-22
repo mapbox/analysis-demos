@@ -1,0 +1,16 @@
+<div class='pad1 keyline-bottom'>
+  <h4>
+    <span class='pad0 inline dot space-right0 fill-<%- data.type %>'></span>
+    <%- data.NAME %>
+  </h4>
+  <div class='quiet'>
+    <% if (data.ADDRESS1) { %><%- data.ADDRESS1 %><% } %>
+    <% if (data.ADDRESS2) { %><%- data.ADDRESS2 %><% } %>
+  </div>
+  <% if (data.TEL) { %>
+    <a href='tel:+<%- data.phoneformatted %>' class='strong micro'><%- data.TEL %></a>
+  <% } %>
+  <% if (data.URL) { %>
+    &middot;  <a href='<%- data.URL %>' target='_blank' class='strong micro'>Website</a>
+  <% } %>
+</div>
