@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Property assessments in Philadelphia</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <link href='https://www.mapbox.com/base/latest/base.css' rel='stylesheet' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v0.13.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v0.13.1/mapbox-gl.css' rel='stylesheet' />
+  <link href='site.css' rel='stylesheet' />
+</head>
+<body class='unlimiter loading clip'>
+
+<div id='map' class='map'></div>
+
+<div class='pin-topleft pin-bottomleft pad1 z10 sidebar-container'>
+  <div id='sidebar' class='fill-darkgrey round lifted full-height-container contain'>
+
+    <div class='pad2 contain dark'>
+      <h3 class='block space-bottom1'>Property assessments in Philadelphia</h3>
+      <div class='prose quiet'>
+        <p>Drag the blue circle on the map to browse properties underneath.</p>
+      </div>
+    </div>
+    <div class='keyline-top small dark z10 pad2'>
+      <fieldset id='radius' class='dark'>
+        <span class='small strong block'><span class='quiet'>Search radius:</span> <span id='radius-value' class='highlight'></span></span>
+        <input class='col12' type='range' value='0' min='20' max='250' step='1'>
+      </fieldset>
+    </div>
+    <header id='listings-header' class='pad2x pad1y listings-header'></header>
+    <div id='listings' class='scroll scroll-styled fill-white round-bottom'></div>
+    <div id='error' class='strong small pin-bottom col12 offcanvas-bottom fill-orange animate dark z1 round-bottom'></div>
+  </div>
+</div>
+
+<div class='pin-topright pad1 z10 filter-container'>
+  <nav id='filter-group' class='checkbox-pill pill lifted fill-darkgrey round'></nav>
+</div>
+
+<div class='pin-bottomleft z1 mb-watermark pad0y hide-mobile'>
+  <a target='_blank' href='https://www.mapbox.com/'><img src='mb.svg' alt='Mapbox' /></a>
+</div>
+
+<script src='bundle.js'></script>
+</body>
+</html>

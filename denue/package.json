@@ -1,0 +1,39 @@
+{
+  "name": "demo",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint --no-eslintrc -c .eslintrc index.js",
+    "start": "budo index.js --serve=bundle.js --live -d",
+    "build": "browserify index.js | uglifyjs -c -m > bundle.js"
+  },
+  "browserify": {
+    "transform": [
+      "envify",
+      "brfs"
+    ]
+  },
+  "keywords": [
+    "demo",
+    "mapbox-gl-js"
+  ],
+  "author": "tristen",
+  "license": "ISC",
+  "devDependencies": {
+    "brfs": "^1.4.3",
+    "browserify": "^12.0.1",
+    "budo": "^7.0.1",
+    "envify": "^3.4.0",
+    "eslint": "^1.10.3",
+    "neat-csv": "^1.1.0",
+    "uglify-js": "^2.6.1"
+  },
+  "dependencies": {
+    "hashable": "^1.5.5",
+    "lodash.groupby": "^4.2.0",
+    "lodash.template": "^4.2.0",
+    "turf-distance": "^1.1.0",
+    "turf-point": "^2.0.1",
+    "xtend": "^4.0.1"
+  }
+}

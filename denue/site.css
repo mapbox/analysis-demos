@@ -1,0 +1,141 @@
+#map { position:absolute; top:0; bottom:0; width:100%; }
+
+/* mapboxgl overrides */
+.mapboxgl-popup { margin-top:-30px; }
+.mapboxgl-popup-content { min-width:180px; padding:0; }
+.mapboxgl-ctrl-bottom-right a { color:#fff; }
+.mapboxgl-ctrl-bottom-right a:hover { text-decoration:underline; }
+
+/* Utils */
+.punt-clicks { pointer-events:none; }
+.loading:before { background:rgba(0,0,0,0.25); }
+
+/* Style classes */
+.fill-darkgrey { background-color:#505050; }
+.lifted { box-shadow:0 1px 2px rgba(0,0,0,0.20); }
+
+/* Sidebar container height rules */
+.full-height-container {
+  display:-webkit-box;
+  display:flex;
+  -webkit-box-orient:vertical;
+  flex-direction:column;
+  height:100%;
+  }
+  .full-height-container .scroll {
+    overflow-y:scroll;
+    min-height:0;
+    -webkit-box-flex:1;
+                flex:1;
+    }
+
+.sidebar-container { width:300px; }
+.sidebar-container .keyline-top { border-color:rgba(0,0,0,0.4); }
+.mb-watermark { left:320px; }
+
+header {
+  position:relative;
+  z-index:1;
+  -webkit-box-shadow:0 2px 4px 0 rgba(0,0,0,0.10);
+          box-shadow:0 2px 4px 0 rgba(0,0,0,0.10);
+  }
+
+.property-value-tab { min-width:65px; text-align:center; }
+
+/* Property type layer toggle */
+.checkbox-pill > :last-child {
+  border:none;
+  }
+.checkbox-pill label {
+  border-color:rgba(0,0,0,0.4);
+  }
+.checkbox-pill input[type=checkbox] + .button,
+.checkbox-pill input[type=checkbox]:checked + .button {
+  background-color:transparent;
+  }
+.checkbox-pill input[type=checkbox] + .button:hover,
+.checkbox-pill input[type=checkbox]:checked + .button:hover {
+  background-color:#404040;
+  }
+.checkbox-pill input[type=checkbox] + .button > span,
+.checkbox-pill input[type=checkbox] + .button:before {
+  content:'';
+  background-color:rgba(0,0,0,0.4);
+  border-radius:50%;
+  display:inline-block;
+  vertical-align:middle;
+  width:12px;
+  height:12px;
+  margin-right:10px;
+  }
+.checkbox-pill input[type=checkbox] + .button > span {
+  position:absolute;
+  left:13px;
+  top:18px;
+  width:6px;
+  height:6px;
+  display:none;
+  }
+  .checkbox-pill input[type=checkbox]:checked + .button > span { display:inline-block }
+
+.mapboxgl-radius-browser.active {
+  background-color:#52a1d8!important;
+  /*82, 161, 216*/
+  }
+.mapboxgl-radius-browser:hover {
+  cursor:move;
+  }
+
+/* Property listings */
+button.listing {
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  text-align:left;
+  margin:0;
+  padding:0;
+  font-size:12px;
+  line-height: 20px;
+  width:100%;
+  height:auto;
+  }
+  button.listing.active,
+  button.listing:hover {
+    background-color:rgba(0,0,0,0.05);
+    }
+  button.listing.active p {
+    font-family:'Open Sans Bold', sans-serif;
+    font-weight:normal;
+    }
+
+/* mapboxgljs overrides */
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib { background-color:rgba(0,0,0,0.5); }
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib a { color:#fff; }
+
+/* Embed adjustment */
+.embed .sidebar-container { left:10px; }
+.embed .mapboxgl-ctrl-bottom-right,
+.embed .filter-container { right:10px; }
+
+/* Mobile */
+@media only screen and (max-width:640px) {
+.sidebar-container {
+  position:absolute;
+  width:100%;
+  padding:0;
+  margin:0;
+  border-radius:0;
+  top:auto;
+  bottom:0;
+  height:40%;
+  z-index:10;
+  }
+  .sidebar-container > div {
+    height:100%;
+    border-radius:0;
+    box-shadow:none;
+    }
+  .sidebar-container .round-bottom { border-radius:none; }
+
+.mapboxgl-ctrl-bottom-right { bottom:40%; }
+}
