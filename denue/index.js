@@ -16,7 +16,7 @@ var hashable = require('hashable').hash();
 var Circle = require('./circle');
 
 var params = {
-  center: [-75.1759, 39.9361],
+  center: [-99.14396166801453, 19.4357369232938],
   radius: 100,
   exclude: [],
   zoom: 15
@@ -39,10 +39,10 @@ hashable.change(function(e) {
   setHash(hash);
 }).read();
 
-// Set bounds to Philadelphia
+// Set bounds to Mexico City
 var bounds = [
-  [-75.63195500381617, 39.76055866429846], // Southwest coordinates
-  [-74.6075343956525, 40.122534817620846] // Northeast coordinates
+  [-99.4, 19.1],  // Southwest coordinates
+  [-98.9, 19.6]   // Northeast coordinates
 ];
 
 // Templates
@@ -130,23 +130,23 @@ function initialize() {
 
   // Prepend data attribution
   var credit = document.createElement('a');
-  credit.href = 'https://www.opendataphilly.org/dataset/opa-property-assessments';
+  credit.href = 'http://busca.datos.gob.mx/#!/conjuntos/directorio-estadistico-nacional-de-unidades-economicas-denue-por-entidad-federativa/';
   credit.className = 'fill-darken2 pad0x inline fr color-white';
   credit.target = '_target';
-  credit.textContent = 'Data provided by OpenDataPhilly';
+  credit.textContent = 'Data provided by INEGI at datos.gob.mx';
   map.getContainer().querySelector('.mapboxgl-ctrl-bottom-right').appendChild(credit);
 
-  map.addSource('philly', {
+  map.addSource('denue', {
     type: 'vector',
-    url: 'mapbox://mapbox.13m9czcc'
+    url: 'mapbox://rodowi.8jng711a'
   });
 
   map.addLayer({
-    id: 'philly',
+    id: 'denue',
     type: 'circle',
-    source: 'philly',
+    source: 'denue',
     interactive: true,
-    'source-layer': 'original',
+    'source-layer': 'denue',
     paint: {
       'circle-radius': 0
     }
@@ -215,7 +215,7 @@ function initialize() {
 }
 
 map.on('source.load', function(e) {
-  if (e.source.id === 'philly') {
+  if (e.source.id === 'denue') {
     position = {
       x: position.x + innerRadius / 2,
       y: position.y + innerRadius / 2
@@ -352,7 +352,7 @@ function redraw(e) {
 
   map.featuresIn([ne, sw], {
     includeGeometry: true,
-    layer: 'philly'
+    layer: 'denue'
   }, function(err, features) {
     if (err) return emitError(err.message);
     if (!features.length) return emitError('No properties found');
