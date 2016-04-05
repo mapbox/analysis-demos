@@ -2,7 +2,10 @@
   <h3><%- properties.price %></h3>
 </div>
 <div class='pad1 fill-white round-bottom'>
-  <h4 class='capitalize'><%- properties.address.toLowerCase() %></h4>
+  <h4 class='capitalize'><%- properties.nom_estab.toLowerCase() %></h4>
+  <% if (properties.address) { %>
+    <span class='capitalize'><%- properties.address.toLowerCase() %></span>
+  <% } %>
   <% if (properties.rooms) { %>
     <span class='quiet'><%- properties.rooms %> rooms</span>
   <% } %>
