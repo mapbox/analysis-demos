@@ -138,7 +138,7 @@ function initialize() {
 
   map.addSource('denue', {
     type: 'vector',
-    url: 'mapbox://rodowi.8jng711a'
+    url: 'mapbox://rodowi.4honomsi'
   });
 
   map.addLayer({
@@ -146,7 +146,7 @@ function initialize() {
     type: 'circle',
     source: 'denue',
     interactive: true,
-    'source-layer': 'denue',
+    'source-layer': 'denue_09_25022015',
     paint: {
       'circle-radius': 0
     }
