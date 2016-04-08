@@ -98,12 +98,12 @@ var geojson = {
 };
 
 var layers = [
-  [0, '#27b691', 'Residential'],
-  [1, '#ed5299', 'Commecial'],
-  [2, '#484896', 'Hotels & Apartments'],
-  [3, '#ec3649', 'Store with dwelling'],
-  [4, '#f06f42', 'Vacant land'],
-  [5, '#f6d845', 'Industrial']
+  [460000, '#27b691', 'Retail trade'],
+  [520000, '#ed5299', 'Financial and insurance'],
+  [610000, '#484896', 'Educational services'],
+  [620000, '#ec3649', 'Healthcare and social assistance'],
+  [710000, '#f06f42', 'Cultural and sporting'],
+  [430000, '#f6d845', 'Wholesale trade']
 ];
 
 function loading(state) {
@@ -138,7 +138,7 @@ function initialize() {
 
   map.addSource('denue', {
     type: 'vector',
-    url: 'mapbox://rodowi.4honomsi'
+    url: 'mapbox://rodowi.2wgwdqjj'
   });
 
   map.addLayer({
@@ -174,7 +174,11 @@ function initialize() {
           stops: [[13, 1], [15, 1.5], [17, 3]]
         }
       },
-      filter: ['==', 'category', layer[0]]
+      filter: [
+        "all",
+        [">=", 'category', layer[0]],
+        ["<=", 'category', layer[0] + 9999]
+      ]
 
     }, 'road-label-sm');
 
