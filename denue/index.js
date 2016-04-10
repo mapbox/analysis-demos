@@ -137,11 +137,18 @@ function categoryName(categoryId) {
   return layer ? layer[2] : 'Other category';
 }
 
+function logStats(features) {
+  var categories = _.map(features, (f) => { return f.properties.category / 10000 });
+  var stats = _.countBy(categories, Math.floor);
+  console.log(stats);
+}
+
 function featuresIn(map, box, callback) {
   map.featuresIn(box, {
     includeGeometry: true,
     layer: 'denue'
   }, function(err, features) {
+    // logStats(features);
     callback(err, featuresWithBroaderCategories(features));
   });
 }
