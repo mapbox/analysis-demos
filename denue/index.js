@@ -9,6 +9,7 @@ var path = require('path');
 
 var template = require('lodash.template');
 var groupBy = require('lodash.groupby');
+var _ = require('lodash');
 var distance = require('turf-distance');
 var point = require('turf-point');
 var extend = require('xtend');
@@ -105,6 +106,37 @@ var layers = [
   [710000, '#f06f42', 'Cultural and sporting'],
   [430000, '#f6d845', 'Wholesale trade']
 ];
+
+/**
+ * Returns parent category for a full SCIAN category id,
+ * by applying a floor-style formula to the 6-digit integer
+ * This is use to group businesses types in broader categories
+ *
+ * @param {number} category: current 6-digit category, e.g. 461110
+ * @returns {number} 6-digit category, e.g. 460000
+ */
+function parentCategory(category) {
+  return Math.trunc(category / 10000) * 10000;
+}
+
+function parentCategoryInFeature(c) {
+  return { properties: { category: parentCategory(c) } };
+}
+
+function featuresWithBroaderCategories(features) {
+  return _.map(features, (f) => {
+    return _.merge(f, parentCategoryInFeature(f.properties.category));
+  });
+}
+
+function featuresIn(map, box, callback) {
+  map.featuresIn(box, {
+    includeGeometry: true,
+    layer: 'denue'
+  }, function(err, features) {
+    callback(err, featuresWithBroaderCategories(features));
+  });
+}
 
 function loading(state) {
   document.getElementById('sidebar').classList.toggle('loading', state);
@@ -354,10 +386,7 @@ function redraw(e) {
   var ne = new mapboxgl.Point(position.x + r, position.y - r);
   var sw = new mapboxgl.Point(position.x - r, position.y + r);
 
-  map.featuresIn([ne, sw], {
-    includeGeometry: true,
-    layer: 'denue'
-  }, function(err, features) {
+  featuresIn(map, [ne, sw], function(err, features) {
     if (err) return emitError(err.message);
     if (!features.length) return emitError('No properties found');
 
