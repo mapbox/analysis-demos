@@ -104,6 +104,7 @@ var layers = [
   [610000, '#484896', 'Educational services'],
   [620000, '#ec3649', 'Healthcare and social assistance'],
   [710000, '#f06f42', 'Cultural and sporting'],
+  [720000, '#276ff0', 'Hotels, restaurants, and bars'],
   [430000, '#f6d845', 'Wholesale trade']
 ];
 
