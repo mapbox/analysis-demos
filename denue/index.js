@@ -171,7 +171,7 @@ function initialize() {
         'circle-color': layer[1],
         'circle-radius': {
           base: 1,
-          stops: [[13, 1], [15, 1.5], [17, 3]]
+          stops: [[13, 2], [15, 2.5], [17, 4]]
         }
       },
       filter: [
