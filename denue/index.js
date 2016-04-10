@@ -366,7 +366,7 @@ function buildHeader(container, section) {
 
   var title = document.createElement('strong');
   title.className = 'small quiet space-right0';
-  title.textContent = category;
+  title.textContent = category || 'Other category';
 
   var n = parseInt(properties, 10);
   var sub = document.createElement('strong');
