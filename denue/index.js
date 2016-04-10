@@ -129,6 +129,13 @@ function featuresWithBroaderCategories(features) {
   });
 }
 
+function categoryName(categoryId) {
+  var layer = _.find(layers, (l) => {
+    return l[0] == categoryId;
+  });
+  return layer ? layer[2] : 'Other category';
+}
+
 function featuresIn(map, box, callback) {
   map.featuresIn(box, {
     includeGeometry: true,
@@ -339,6 +346,12 @@ function fill(d) {
 }
 
 function buildPopup(d) {
+  // Adding an extra property for displaying the category name
+  d = _.merge(d, {
+    properties: {
+      categoryName: categoryName(d.properties.category)
+    }
+  });
   popup
     .remove()
     .setLngLat(d.geometry.coordinates)
