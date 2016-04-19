@@ -1,5 +1,7 @@
 Exploring half a million businesses in Mexico City
 
+![explore-denue](https://raw.githubusercontent.com/mapbox/analysis-demos/denue/denue/denue.gif)
+
 ## DENUE?
 
 [DENUE](http://busca.datos.gob.mx/#!/conjuntos/directorio-estadistico-nacional-de-unidades-economicas-denue-por-entidad-federativa/) is a national economic census conducted by [INEGI](https://en.wikipedia.org/wiki/INEGI). The census holds more than 5M records about any kind of business; from Mom & Pop shops to big 'maquilas'.
