@@ -62,8 +62,6 @@ Using the [csvkit](http://csvkit.readthedocs.org/en/0.9.1/) we can figure out wh
 Row count: 452347
 ```
 
-We definitely find Mom & Pop shops ('Comercio al por menor en tiendas de abarrotes, ultramarinos y misceláneas (code: 461110, frequency: 40997).
-
 ## Setup
 
 The following script downloads data from INEGI, unzips, filter out, and transform to vector tilesets. All files are placed in a `./data/` directory.
@@ -72,4 +70,4 @@ The following script downloads data from INEGI, unzips, filter out, and transfor
 ./data.sh
 ```
 
-A few utilities are needed on your system to run this: [GDAL](https://wiki.ubuntu.com/UbuntuGIS), [Protobuf](https://github.com/google/protobuf/blob/master/src/README.md) and [tippecanoe](https://github.com/mapbox/tippecanoe).
+A few utilities are needed to run this: [GDAL](https://wiki.ubuntu.com/UbuntuGIS), [Protobuf](https://github.com/google/protobuf/blob/master/src/README.md) and [tippecanoe](https://github.com/mapbox/tippecanoe).
