@@ -37,9 +37,7 @@ nombre_act: String (254.0)
 
 For the Mexico City area (Number 09) we can find 452,347 features, each of one tagged as one of 42,605 types of economic activities defined by [SCIAN](http://www3.inegi.org.mx/sistemas/SCIAN/scian.aspx) classification system.
 
-We would like to understand which type of activities have the more frequency so we can group points by broader concepts.
-
-Using the [csvkit](http://csvkit.readthedocs.org/en/0.9.1/) we can figure this out with a few commands.
+Using the [csvkit](http://csvkit.readthedocs.org/en/0.9.1/) we can figure out which activities have more entries.
 
 ```bash
 ✗ in2csv --format geojson data/denue_09_25022015.json > data/denue_09_25022015.csv
