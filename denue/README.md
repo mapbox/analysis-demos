@@ -62,6 +62,8 @@ Using the [csvkit](http://csvkit.readthedocs.org/en/0.9.1/) we can figure out wh
 Row count: 452347
 ```
 
+_461110 is the code for small shops (freq of 40,997)._
+
 ## Setup
 
 The following script downloads data from INEGI, unzips, filter out, and transform to vector tilesets. All files are placed in a `./data/` directory.
