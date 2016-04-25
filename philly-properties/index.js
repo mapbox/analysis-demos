@@ -99,8 +99,8 @@ var geojson = {
 
 var layers = [
   [0, '#27b691', 'Residential'],
-  [1, '#ed5299', 'Commecial'],
-  [2, '#484896', 'Hotels & Apartments'],
+  [1, '#ed5299', 'Commercial'],
+  [2, '#484896', 'Hotels & apartments'],
   [3, '#ec3649', 'Store with dwelling'],
   [4, '#f06f42', 'Vacant land'],
   [5, '#f6d845', 'Industrial']
