@@ -1,9 +1,7 @@
 'use strict';
 
 /* global mapboxgl */
-
-var mapboxgl = require('mapbox-gl');
-window.mapboxgl = mapboxgl;
+window.mapboxgl = require('mapbox-gl');
 mapboxgl.accessToken = 'pk.eyJ1IjoidHJpc3RlbiIsImEiOiJjaXQxbm95M3YwcjN0MnpwZ2x2YWd1dDhhIn0.Li4zw6oFRX-ohGQISnrmJA';
 
 require('mapbox-gl-geocoder');
@@ -27,10 +25,6 @@ var popupTemplate = template(document.getElementById('popup-template').innerHTML
 var resultTemplate = template(document.getElementById('result-template').innerHTML);
 
 var mapbox = new MapboxClient(mapboxgl.accessToken);
-
-var surfaceData = 'mapbox.82pkq93d';
-var surfaceLayer = 'original';
-var surfaceFields = ['COUNTY', 'median-income', 'population'];
 
 var map = new mapboxgl.Map({
   container: 'map',
@@ -104,22 +98,23 @@ function initialize() {
     source: 'boxdraw',
     paint: {
       'fill-color': {
-        property: 'population',
+        property: 'median-income',
         stops: [
           [0, '#F2F12D'],
-          [100, '#EED322'],
-          [1000, '#E6B71E'],
-          [5000, '#DA9C20'],
-          [10000, '#CA8323'],
+          [25000, '#E6B71E'],
           [50000, '#B86B25'],
-          [100000, '#A25626'],
-          [500000, '#8B4225'],
-          [1000000, '#723122']
+          [100000, '#8B4225'],
+          [200000, '#723122']
         ]
       },
       'fill-outline-color': 'rgba(0,0,0,0.10)',
       'fill-opacity': 0.75
-    }
+    },
+    filter: [
+      'all',
+      ['has', 'median-income'],
+      ['!=', 'median-income', 'null']
+    ]
   }, 'place_label_city_small_s');
 
   // Add the draw control to the map
@@ -193,7 +188,9 @@ function drawHexGrid(bbox) {
     centers.push(feature.geometry.coordinates.reverse());
   });
 
-  mapbox.surface(surfaceData, surfaceLayer, surfaceFields, polyline.encode(centers), {
+  mapbox.surface('mapbox.82pkq93d', 'original', [
+    'COUNTY', 'median-income', 'population'
+  ], polyline.encode(centers), {
     geojson: true
   }, function(err, data) {
     if (err) {
