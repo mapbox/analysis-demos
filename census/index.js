@@ -267,7 +267,7 @@ map.on('mousemove', function(e) {
     .addTo(map);
 });
 
-geocoder.on('geocoder.input', function(e) {
+geocoder.on('result', function(e) {
   bbox = e.result.bbox;
   drawHexGrid(bbox);
 });
