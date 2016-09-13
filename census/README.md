@@ -9,16 +9,6 @@ access here: https://www.mapbox.com/blog/introducing-the-surface-api/
 
 __Demo:__ https://www.mapbox.com/analysis-demos/census/
 
-### Installing
-
-    npm install
-
-### Running locally
-
-    MapboxAccessToken=<YOUR TOKEN> npm start
-
-Open your browser to http://localhost:9966
-
 ### Building
 
     MapboxAccessToken=<YOUR TOKEN> npm run build
