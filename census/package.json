@@ -13,10 +13,14 @@
   "dependencies": {
     "lodash.template": "^4.0.0",
     "mapbox": "^1.0.0-beta3",
+    "mapbox-gl": "^0.23.0",
+    "mapbox-gl-geocoder": "^1.3.1",
     "median": "0.0.2",
     "polyline": "^0.2.0",
+    "turf-bbox": "^3.0.12",
     "turf-centroid": "^3.0.12",
-    "turf-hex-grid": "^3.0.12"
+    "turf-hex-grid": "^3.0.12",
+    "turf-point": "^2.0.1"
   },
   "devDependencies": {
     "browserify": "^13.1.0",

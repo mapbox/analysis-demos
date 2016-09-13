@@ -1,7 +1,12 @@
 'use strict';
 
 /* global mapboxgl */
+
+var mapboxgl = require('mapbox-gl');
+window.mapboxgl = mapboxgl;
 mapboxgl.accessToken = 'pk.eyJ1IjoidHJpc3RlbiIsImEiOiJjaXQxbm95M3YwcjN0MnpwZ2x2YWd1dDhhIn0.Li4zw6oFRX-ohGQISnrmJA';
+
+require('mapbox-gl-geocoder');
 
 var MapboxClient = require('mapbox/lib/services/surface');
 var polyline = require('polyline');
@@ -64,30 +69,6 @@ var box = new Box(map.getContainer(), {
   strokeWidth: 2
 });
 
-var layers = [
-  [1000000, '#723122', 'dark'],
-  [500000, '#8B4225', 'dark'],
-  [100000, '#A25626', 'dark'],
-  [50000, '#B86B25', 'dark'],
-  [10000, '#CA8323', ''],
-  [5000, '#DA9C20', ''],
-  [1000, '#E6B71E', ''],
-  [100, '#EED322', ''],
-  [0, '#F2F12D', '']
-];
-
-function fillLayer(v) {
-  var index;
-  layers.forEach(function(d, i) {
-    if (i === 0) {
-      if (v >= d[0]) index = i;
-    } else {
-      if (v >= d[0] && v < layers[i - 1][0]) index = i;
-    }
-  });
-  return layers[index];
-}
-
 function emitError(msg) {
   window.clearTimeout(error);
   var $error = document.getElementById('error');
@@ -110,31 +91,36 @@ function initialize() {
   document.body.classList.remove('loading');
 
   map.addSource('boxdraw', {
-    "type": "geojson",
+    "type": 'geojson',
     "data": {
       "type": "FeatureCollection",
       "features": []
     }
   });
 
-  layers.forEach(function (layer, i) {
-    map.addLayer({
-      "id": "hex-" + i,
-      "interactive": true,
-      "type": "fill",
-      "source": "boxdraw",
-      "paint": {
-        "fill-color": layer[1],
-        "fill-outline-color": layer[1],
-        "fill-opacity": 0.75
+  map.addLayer({
+    id: 'hex',
+    type: 'fill',
+    source: 'boxdraw',
+    paint: {
+      'fill-color': {
+        property: 'population',
+        stops: [
+          [0, '#F2F12D'],
+          [100, '#EED322'],
+          [1000, '#E6B71E'],
+          [5000, '#DA9C20'],
+          [10000, '#CA8323'],
+          [50000, '#B86B25'],
+          [100000, '#A25626'],
+          [500000, '#8B4225'],
+          [1000000, '#723122']
+        ]
       },
-      "filter": i == 0 ?
-        [">=", "population", layer[0]] :
-        ["all",
-          [">=", "population", layer[0]],
-          ["<", "population", layers[i - 1][0]]]
-    }, 'place_label_city_small_s');
-  });
+      'fill-outline-color': 'rgba(0,0,0,0.10)',
+      'fill-opacity': 0.75
+    }
+  }, 'place_label_city_small_s');
 
   // Add the draw control to the map
   draw = document.createElement('button');
@@ -168,7 +154,7 @@ function initialize() {
 
     var start = map.unproject(e.start);
     var end = map.unproject(e.end);
-    var bbox = turfBbox({
+    bbox = turfBbox({
       type: 'FeatureCollection',
       features: [
         turfPoint([start.lng, start.lat]),
@@ -260,10 +246,7 @@ map.on('mousemove', function(e) {
   if (draw.classList.contains('active')) return;
 
   var features = map.queryRenderedFeatures(e.point, {
-    layers: layers.reduce(function(memo, layer, i) {
-      memo.push('hex-' + i);
-      return memo;
-    }, [])
+    layers: ['hex']
   });
 
   map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
@@ -274,13 +257,10 @@ map.on('mousemove', function(e) {
   }
 
   var feature = features[0];
-  var color = fillLayer(feature.properties.population);
 
-  popup.setLngLat(feature.properties.point)
+  popup.setLngLat(e.lngLat)
     .setHTML(popupTemplate({
       county: feature.properties.COUNTY,
-      fill: color[1],
-      klass: color[2],
       population: feature.properties.population.toLocaleString(),
       medianIncome: feature.properties['median-income'].toLocaleString()
     }))
