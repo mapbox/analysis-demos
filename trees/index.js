@@ -4,6 +4,7 @@
 window.mapboxgl = require('mapbox-gl');
 mapboxgl.accessToken = 'pk.eyJ1IjoidHJpc3RlbiIsImEiOiJjaXQxbm95M3YwcjN0MnpwZ2x2YWd1dDhhIn0.Li4zw6oFRX-ohGQISnrmJA';
 
+var fs = require('fs');
 var turfSimplify = require('turf-simplify');
 var turfWithin = require('turf-within');
 var groupBy = require('lodash.groupby');
@@ -11,9 +12,10 @@ var rainbow = require('rainbow');
 var Pencil = require('pencil');
 
 // Data
-var trees = require('/data/trees.geojson');
-var codes = require('/data/species.json');
-var conditions = require('/data/conditions.json');
+var trees = JSON.parse(fs.readFileSync('./data/trees.geojson', 'utf8'));
+
+var codes = require('./data/species.json');
+var conditions = require('./data/conditions.json');
 
 var map = new mapboxgl.Map({
   container: 'map',
@@ -95,7 +97,6 @@ function initialize() {
     source: 'geojson',
     paint: {
       'line-color': '#027dbd',
-      'line-join': 'round',
       'line-width': 2
     }
   }, 'place_label_neighborhood');
