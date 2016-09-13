@@ -1,32 +1,34 @@
 'use strict';
 
 /* global mapboxgl */
-var fs = require('fs');
-var path = require('path');
+window.mapboxgl = require('mapbox-gl');
+mapboxgl.accessToken = 'pk.eyJ1IjoidHJpc3RlbiIsImEiOiJjaXQxbm95M3YwcjN0MnpwZ2x2YWd1dDhhIn0.Li4zw6oFRX-ohGQISnrmJA';
+
+require('mapbox-gl-geocoder');
 
 var MapboxClient = require('mapbox/lib/services/surface');
-var hexGrid = require('turf-hex-grid');
-var centroid = require('turf-centroid');
 var polyline = require('polyline');
 var template = require('lodash.template');
 var median = require('median');
-var popupTemplate = template(fs.readFileSync(path.join(__dirname, '/templates/popup.html'), 'utf8'));
-var resultTemplate = template(fs.readFileSync(path.join(__dirname, '/templates/result.html'), 'utf8'));
+
+var turfPoint = require('turf-point');
+var turfBbox = require('turf-bbox');
+var turfHexGrid = require('turf-hex-grid');
+var turfCentroid = require('turf-centroid');
 
 // Box draw interaction
 var Box = require('./box');
 var bbox = [];
 
-mapboxgl.accessToken = process.env.MapboxAccessToken;
-var mapbox = new MapboxClient(mapboxgl.accessToken);
+// Templates
+var popupTemplate = template(document.getElementById('popup-template').innerHTML);
+var resultTemplate = template(document.getElementById('result-template').innerHTML);
 
-var surfaceData = 'mapbox.82pkq93d';
-var surfaceLayer = 'original';
-var surfaceFields = ['COUNTY', 'median-income', 'population'];
+var mapbox = new MapboxClient(mapboxgl.accessToken);
 
 var map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/light-v8',
+  style: 'mapbox://styles/mapbox/light-v9',
   center: [-98, 38.88],
   minZoom: 3,
   maxZoom: 8,
@@ -61,30 +63,6 @@ var box = new Box(map.getContainer(), {
   strokeWidth: 2
 });
 
-var layers = [
-  [1000000, '#723122', 'dark'],
-  [500000, '#8B4225', 'dark'],
-  [100000, '#A25626', 'dark'],
-  [50000, '#B86B25', 'dark'],
-  [10000, '#CA8323', ''],
-  [5000, '#DA9C20', ''],
-  [1000, '#E6B71E', ''],
-  [100, '#EED322', ''],
-  [0, '#F2F12D', '']
-];
-
-function fillLayer(v) {
-  var index;
-  layers.forEach(function(d, i) {
-    if (i === 0) {
-      if (v >= d[0]) index = i;
-    } else {
-      if (v >= d[0] && v < layers[i - 1][0]) index = i;
-    }
-  });
-  return layers[index];
-}
-
 function emitError(msg) {
   window.clearTimeout(error);
   var $error = document.getElementById('error');
@@ -107,31 +85,37 @@ function initialize() {
   document.body.classList.remove('loading');
 
   map.addSource('boxdraw', {
-    "type": "geojson",
+    "type": 'geojson',
     "data": {
       "type": "FeatureCollection",
       "features": []
     }
   });
 
-  layers.forEach(function (layer, i) {
-    map.addLayer({
-      "id": "hex-" + i,
-      "interactive": true,
-      "type": "fill",
-      "source": "boxdraw",
-      "paint": {
-        "fill-color": layer[1],
-        "fill-outline-color": layer[1],
-        "fill-opacity": 0.75
+  map.addLayer({
+    id: 'hex',
+    type: 'fill',
+    source: 'boxdraw',
+    paint: {
+      'fill-color': {
+        property: 'median-income',
+        stops: [
+          [0, '#F2F12D'],
+          [25000, '#E6B71E'],
+          [50000, '#B86B25'],
+          [100000, '#8B4225'],
+          [200000, '#723122']
+        ]
       },
-      "filter": i == 0 ?
-        [">=", "population", layer[0]] :
-        ["all",
-          [">=", "population", layer[0]],
-          ["<", "population", layers[i - 1][0]]]
-    }, 'place_label_city_small_s');
-  });
+      'fill-outline-color': 'rgba(0,0,0,0.10)',
+      'fill-opacity': 0.75
+    },
+    filter: [
+      'all',
+      ['has', 'median-income'],
+      ['!=', 'median-income', 'null']
+    ]
+  }, 'place_label_city_small_s');
 
   // Add the draw control to the map
   draw = document.createElement('button');
@@ -163,13 +147,15 @@ function initialize() {
     // Clear the geocoder box if there's a result in it
     clearGeocoder();
 
-    var bounds = new mapboxgl.LngLatBounds(map.unproject(e.start), map.unproject(e.end)).toArray();
-    bbox = [
-      bounds[0][0],
-      bounds[0][1],
-      bounds[1][0],
-      bounds[1][1]
-    ];
+    var start = map.unproject(e.start);
+    var end = map.unproject(e.end);
+    bbox = turfBbox({
+      type: 'FeatureCollection',
+      features: [
+        turfPoint([start.lng, start.lat]),
+        turfPoint([end.lng, end.lat])
+      ]
+    });
 
     drawHexGrid(bbox);
   });
@@ -192,16 +178,19 @@ function clearGeocoder() {
 
 function drawHexGrid(bbox) {
   loading(true);
-  var grid = hexGrid(bbox, hex, 'miles');
+
+  var grid = turfHexGrid(bbox, hex, 'miles');
   var centers = [];
 
   // Grab the center of each hex for surface request
   grid.features.forEach(function(feature) {
-    feature = centroid(feature);
+    feature = turfCentroid(feature);
     centers.push(feature.geometry.coordinates.reverse());
   });
 
-  mapbox.surface(surfaceData, surfaceLayer, surfaceFields, polyline.encode(centers), {
+  mapbox.surface('mapbox.82pkq93d', 'original', [
+    'COUNTY', 'median-income', 'population'
+  ], polyline.encode(centers), {
     geojson: true
   }, function(err, data) {
     if (err) {
@@ -253,40 +242,31 @@ $hexSize.querySelector('input').addEventListener('change', function(e) {
 map.on('mousemove', function(e) {
   if (draw.classList.contains('active')) return;
 
-  map.featuresAt(e.point, {
-    includeGeometry: true,
-    layer: layers.reduce(function(memo, layer, i) {
-      memo.push('hex-' + i);
-      return memo;
-    }, [])
-  }, function(err, features) {
-    map.getCanvas().style.cursor = (!err && features.length) ? 'pointer' : '';
-
-    popup.remove();
-    if (err || !features.length) return;
-
-    var feature = features[0];
-    var color = fillLayer(feature.properties.population);
-
-    popup = new mapboxgl.Popup({
-      closeOnClick: false,
-      closeButton: false
-    })
-      .setLngLat(feature.properties.point)
-      .setHTML(popupTemplate({
-        county: feature.properties.COUNTY,
-        fill: color[1],
-        klass: color[2],
-        population: feature.properties.population.toLocaleString(),
-        medianIncome: feature.properties['median-income'].toLocaleString()
-      }))
-      .addTo(map);
+  var features = map.queryRenderedFeatures(e.point, {
+    layers: ['hex']
   });
+
+  map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+
+  if (!features.length) {
+    popup.remove();
+    return;
+  }
+
+  var feature = features[0];
+
+  popup.setLngLat(e.lngLat)
+    .setHTML(popupTemplate({
+      county: feature.properties.COUNTY,
+      population: feature.properties.population.toLocaleString(),
+      medianIncome: feature.properties['median-income'].toLocaleString()
+    }))
+    .addTo(map);
 });
 
-geocoder.on('geocoder.input', function(e) {
+geocoder.on('result', function(e) {
   bbox = e.result.bbox;
   drawHexGrid(bbox);
 });
 
-map.on('style.load', initialize);
+map.on('load', initialize);

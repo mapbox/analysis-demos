@@ -1,6 +1,10 @@
 body { margin:0; padding:0; }
 .map { position:absolute; top:0; bottom:0; width:100%; }
-.mapboxgl-popup-content { max-width:240px; padding:0; }
+.mapboxgl-popup-content {
+  pointer-events: none;
+  max-width:240px;
+  padding:0;
+  }
 
 .loading:before {
   background:rgba(0,0,0,0.25);
