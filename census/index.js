@@ -1,15 +1,17 @@
 'use strict';
 
 /* global mapboxgl */
-var fs = require('fs');
-var path = require('path');
+mapboxgl.accessToken = 'pk.eyJ1IjoidHJpc3RlbiIsImEiOiJjaXQxbm95M3YwcjN0MnpwZ2x2YWd1dDhhIn0.Li4zw6oFRX-ohGQISnrmJA';
 
 var MapboxClient = require('mapbox/lib/services/surface');
-var hexGrid = require('turf-hex-grid');
-var centroid = require('turf-centroid');
 var polyline = require('polyline');
 var template = require('lodash.template');
 var median = require('median');
+
+var turfPoint = require('turf-point');
+var turfBbox = require('turf-bbox');
+var turfHexGrid = require('turf-hex-grid');
+var turfCentroid = require('turf-centroid');
 
 // Box draw interaction
 var Box = require('./box');
@@ -19,7 +21,6 @@ var bbox = [];
 var popupTemplate = template(document.getElementById('popup-template').innerHTML);
 var resultTemplate = template(document.getElementById('result-template').innerHTML);
 
-mapboxgl.accessToken = process.env.MapboxAccessToken;
 var mapbox = new MapboxClient(mapboxgl.accessToken);
 
 var surfaceData = 'mapbox.82pkq93d';
@@ -165,13 +166,15 @@ function initialize() {
     // Clear the geocoder box if there's a result in it
     clearGeocoder();
 
-    var bounds = new mapboxgl.LngLatBounds(map.unproject(e.start), map.unproject(e.end)).toArray();
-    bbox = [
-      bounds[0][0],
-      bounds[0][1],
-      bounds[1][0],
-      bounds[1][1]
-    ];
+    var start = map.unproject(e.start);
+    var end = map.unproject(e.end);
+    var bbox = turfBbox({
+      type: 'FeatureCollection',
+      features: [
+        turfPoint([start.lng, start.lat]),
+        turfPoint([end.lng, end.lat])
+      ]
+    });
 
     drawHexGrid(bbox);
   });
@@ -195,15 +198,12 @@ function clearGeocoder() {
 function drawHexGrid(bbox) {
   loading(true);
 
-  console.log(bbox, hex);
-
-  var grid = hexGrid(bbox, hex, 'miles');
-
+  var grid = turfHexGrid(bbox, hex, 'miles');
   var centers = [];
 
   // Grab the center of each hex for surface request
   grid.features.forEach(function(feature) {
-    feature = centroid(feature);
+    feature = turfCentroid(feature);
     centers.push(feature.geometry.coordinates.reverse());
   });
 
