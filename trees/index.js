@@ -1,12 +1,8 @@
 'use strict';
 
 /* global mapboxgl */
-/* eslint-disable new-cap */
-mapboxgl.accessToken = process.env.MapboxAccessToken;
-
-// Node modules that browserify supports
-var fs = require('fs');
-var path = require('path');
+window.mapboxgl = require('mapbox-gl');
+mapboxgl.accessToken = 'pk.eyJ1IjoidHJpc3RlbiIsImEiOiJjaXQxbm95M3YwcjN0MnpwZ2x2YWd1dDhhIn0.Li4zw6oFRX-ohGQISnrmJA';
 
 var turfSimplify = require('turf-simplify');
 var turfWithin = require('turf-within');
@@ -15,23 +11,20 @@ var rainbow = require('rainbow');
 var Pencil = require('pencil');
 
 // Data
-var trees = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/trees.geojson'), 'utf8'));
-var codes = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/species.json'), 'utf8'));
-var conditions = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/conditions.json'), 'utf8'));
-
-// Set bounds to New York, New York
-var bounds = [
-  [-74.15990042526758, 40.691133514333956], // Southwest coordinates
-  [-73.78111395202126, 40.845586933304276]  // Northeast coordinates
-];
+var trees = require('/data/trees.geojson');
+var codes = require('/data/species.json');
+var conditions = require('/data/conditions.json');
 
 var map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/light-v8',
+  style: 'mapbox://styles/mapbox/light-v9',
   center: [-73.9903, 40.7262],
   zoom: 12.75,
   minZoom: 12,
-  maxBounds: bounds
+  maxBounds: [ // NYC
+    [-74.15990042526758, 40.691133514333956], // Southwest coordinates
+    [-73.78111395202126, 40.845586933304276]  // Northeast coordinates
+  ]
 });
 
 if (window.location.search.indexOf('embed') !== -1) map.scrollZoom.disable();
@@ -342,60 +335,58 @@ function buildLegend() {
 }
 
 map.on('mousemove', function(e) {
-  map.featuresAt(e.point, {
-    radius: 2.5, // Half the marker size (5px).
-    includeGeometry: true,
-    layer: layers.map(function(layer, i) {
+
+  var features = map.queryRenderedFeatures(e.point, {
+    layers: layers.map(function(layer, i) {
       return 'tree-markers-' + i;
     })
-  }, function(err, features) {
-    // Change the cursor style as a UI indicator.
-    map.getCanvas().style.cursor = (!err && features.length) ? 'pointer' : '';
-
-    if (err || !features.length) {
-      popup.remove();
-      return;
-    }
-
-    var feature = features[0];
-    var p = feature.properties;
-    var popupContainer = document.createElement('div');
-
-    // Look up species code for proper name
-    codes.forEach(function(code) {
-      p.species = p.species === code.code ? code.name : p.species;
-    });
-
-    // Look up condition for description
-    conditions.forEach(function(condition) {
-      p.condition = p.condition === condition.code ? condition.description : p.condition;
-    });
-
-    [
-      ['Species', p.species.toLowerCase()],
-      ['Condition', p.condition],
-      ['Diameter', p.diameter + 'in']
-    ].forEach(function(d) {
-      var item = document.createElement('div');
-      var label = document.createElement('strong');
-      label.className = 'space-right0';
-      label.textContent = d[0];
-
-      var value = document.createElement('div');
-      value.className = 'inline capitalize';
-      value.textContent = d[1];
-
-      item.appendChild(label);
-      item.appendChild(value);
-      popupContainer.appendChild(item);
-    });
-
-    // Initialize a popup and set its coordinates
-    // based on the feature found.
-    popup.setLngLat(feature.geometry.coordinates)
-      .setHTML(popupContainer.innerHTML)
-      .addTo(map);
   });
+
+  map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+
+  if (!features.length) {
+    popup.remove();
+    return;
+  }
+
+  var feature = features[0];
+  var p = feature.properties;
+  var popupContainer = document.createElement('div');
+
+  // Look up species code for proper name
+  codes.forEach(function(code) {
+    p.species = p.species === code.code ? code.name : p.species;
+  });
+
+  // Look up condition for description
+  conditions.forEach(function(condition) {
+    p.condition = p.condition === condition.code ? condition.description : p.condition;
+  });
+
+  [
+    ['Species', p.species.toLowerCase()],
+    ['Condition', p.condition],
+    ['Diameter', p.diameter + 'in']
+  ].forEach(function(d) {
+    var item = document.createElement('div');
+    var label = document.createElement('strong');
+    label.className = 'space-right0';
+    label.textContent = d[0];
+
+    var value = document.createElement('div');
+    value.className = 'inline capitalize';
+    value.textContent = d[1];
+
+    item.appendChild(label);
+    item.appendChild(value);
+    popupContainer.appendChild(item);
+  });
+
+  // Initialize a popup and set its coordinates
+  // based on the feature found.
+  popup.setLngLat(feature.geometry.coordinates)
+    .setHTML(popupContainer.innerHTML)
+    .addTo(map);
 });
 
 map.on('load', initialize);
