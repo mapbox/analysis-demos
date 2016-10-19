@@ -7,12 +7,6 @@
     "start": "budo index.js --serve=bundle.js --live -d",
     "build": "browserify index.js | uglifyjs -c -m > bundle.js"
   },
-  "browserify": {
-    "transform": [
-      "envify",
-      "brfs"
-    ]
-  },
   "keywords": [
     "demo",
     "mapbox-gl-js"
@@ -20,19 +14,17 @@
   "author": "tristen",
   "license": "ISC",
   "devDependencies": {
-    "brfs": "^1.4.3",
-    "browserify": "^12.0.1",
-    "budo": "^7.0.1",
-    "envify": "^3.4.0",
-    "eslint": "^1.10.3",
-    "neat-csv": "^1.1.0",
-    "uglify-js": "^2.6.1"
+    "browserify": "^13.1.0",
+    "budo": "^9.2.1",
+    "eslint": "^3.8.1",
+    "neat-csv": "^2.1.0",
+    "uglify-js": "^2.7.3"
   },
   "dependencies": {
-    "lodash.groupby": "^4.0.1",
+    "lodash.groupby": "^4.6.0",
     "pencil": "tristen/pencil",
     "rainbow": "qard/rainbow",
-    "turf-simplify": "^1.0.3",
-    "turf-within": "^1.0.1"
+    "turf-simplify": "^3.0.12",
+    "turf-within": "^3.0.12"
   }
 }
