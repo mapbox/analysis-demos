@@ -3,10 +3,6 @@
 /* global mapboxgl */
 mapboxgl.accessToken = 'pk.eyJ1IjoidHJpc3RlbiIsImEiOiJjaXQxbm95M3YwcjN0MnpwZ2x2YWd1dDhhIn0.Li4zw6oFRX-ohGQISnrmJA';
 
-// Node modules that browserify supports
-var fs = require('fs');
-var path = require('path');
-
 var turfSimplify = require('turf-simplify');
 var turfWithin = require('turf-within');
 var groupBy = require('lodash.groupby');
@@ -14,7 +10,7 @@ var rainbow = require('rainbow');
 var Pencil = require('pencil');
 
 // Data
-var trees = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/trees.geojson'), 'utf8'));
+var trees = require('./data/trees.geojson');
 var codes = require('./data/species.json');
 var conditions = require('./data/conditions.json');
 
@@ -132,6 +128,13 @@ function initialize() {
   draw.className = 'icon pencil button round-right draw-ctrl';
   draw.title = 'Draw';
 
+  function enableDraw() {
+    draw.classList.add('active');
+    drawCanvas.classList.remove('hidden');
+    drawCanvas.style.cursor = 'crosshair';
+    pencil.enable();
+  }
+
   draw.addEventListener('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -139,14 +142,28 @@ function initialize() {
     if (draw.classList.contains('active')) {
       disableDraw();
     } else {
-      draw.classList.add('active');
-      drawCanvas.classList.remove('hidden');
-      drawCanvas.style.cursor = 'crosshair';
-      pencil.enable();
+      enableDraw();
     }
   });
 
   drawControls.appendChild(draw);
+
+  if (window.location.search.indexOf('overlay') !== -1) {
+    var initialOverlay = document.createElement('div');
+    initialOverlay.className = 'pin-top pin-bottom col12 fill-darken2 z100 dark initial-overlay';
+    var title = document.createElement('h3');
+    title.textContent = 'Click to begin drawing';
+    title.className = 'fancy inline';
+
+    initialOverlay.appendChild(title);
+    document.body.appendChild(initialOverlay);
+
+    initialOverlay.addEventListener('click', function() {
+      initialOverlay.classList.add('hidden');
+      map.zoomTo(12.25);
+      enableDraw();
+    });
+  }
 
   pencil.on('result', function(e) {
     var feature = {

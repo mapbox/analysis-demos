@@ -7,11 +7,6 @@
     "start": "budo index.js --serve=bundle.js --live -d",
     "build": "browserify index.js | uglifyjs -c -m > bundle.js"
   },
-  "browserify": {
-    "transform": [
-      "brfs"
-    ]
-  },
   "keywords": [
     "demo",
     "mapbox-gl-js"
@@ -19,7 +14,6 @@
   "author": "tristen",
   "license": "ISC",
   "devDependencies": {
-    "brfs": "^1.4.3",
     "browserify": "^13.1.0",
     "budo": "^9.2.1",
     "eslint": "^3.8.1",
