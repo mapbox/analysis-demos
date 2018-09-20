@@ -14,11 +14,11 @@
   "author": "tristen",
   "license": "ISC",
   "devDependencies": {
-    "browserify": "^13.1.0",
+    "browserify": "^16.2.2",
     "budo": "^9.2.1",
     "eslint": "^3.8.1",
     "neat-csv": "^2.1.0",
-    "uglify-js": "^2.7.3"
+    "uglify-js": "^3.4.9"
   },
   "dependencies": {
     "lodash.groupby": "^4.6.0",
