@@ -1,22 +1,21 @@
-'use strict';
-
 /* global mapboxgl */
-mapboxgl.accessToken = 'pk.eyJ1IjoidHJpc3RlbiIsImEiOiJjaXQxbm95M3YwcjN0MnpwZ2x2YWd1dDhhIn0.Li4zw6oFRX-ohGQISnrmJA';
+mapboxgl.accessToken =
+  "pk.eyJ1IjoidHJpc3RlbiIsImEiOiJjaXQxbm95M3YwcjN0MnpwZ2x2YWd1dDhhIn0.Li4zw6oFRX-ohGQISnrmJA";
 
-var turfSimplify = require('turf-simplify');
-var turfWithin = require('turf-within');
-var groupBy = require('lodash.groupby');
-var rainbow = require('rainbow');
-var Pencil = require('pencil');
+var turfSimplify = require("turf-simplify");
+var turfWithin = require("turf-within");
+var groupBy = require("lodash.groupby");
+var rainbow = require("rainbow");
+var Pencil = require("pencil");
 
 // Data
-var trees = require('./data/trees.geojson');
-var codes = require('./data/species.json');
-var conditions = require('./data/conditions.json');
+var trees = require("./data/trees.geojson");
+var codes = require("./data/species.json");
+var conditions = require("./data/conditions.json");
 
 var map = new mapboxgl.Map({
-  container: 'map',
-  style: 'mapbox://styles/mapbox/light-v9',
+  container: "map",
+  style: "mapbox://styles/mapbox/light-v9",
   center: [-73.9903, 40.7262],
   zoom: 12,
   minZoom: 12,
@@ -26,21 +25,22 @@ var map = new mapboxgl.Map({
   ]
 });
 
-if (window.location.search.indexOf('embed') !== -1) map.scrollZoom.disable();
+if (window.location.search.indexOf("embed") !== -1) map.scrollZoom.disable();
 
 var popup = new mapboxgl.Popup({
   closeButton: false
 });
 
-var legend = document.getElementById('legend');
-var aggregateContainer = document.getElementById('aggregates');
-var defaultText = document.createElement('strong');
-  defaultText.textContent = trees.features.length.toLocaleString() + ' total trees';
+var legend = document.getElementById("legend");
+var aggregateContainer = document.getElementById("aggregates");
+var defaultText = document.createElement("strong");
+defaultText.textContent =
+  trees.features.length.toLocaleString() + " total trees";
 
 aggregateContainer.appendChild(defaultText);
 
-var drawControls = document.getElementById('draw-controls');
-var drawCanvas = document.getElementById('canvas');
+var drawControls = document.getElementById("draw-controls");
+var drawCanvas = document.getElementById("canvas");
 var draw, clearSelection;
 
 var pencil = new Pencil(drawCanvas);
@@ -48,98 +48,119 @@ var pencil = new Pencil(drawCanvas);
 // Colorized circles to represent trees
 // [<cooresponding diameter>, <color>]
 var layers = [
-  [40, '#10525A', 5],
-  [35, '#096869', 4.5],
-  [30, '#0D8074', 4],
-  [25, '#23977C', 3.5],
-  [20, '#40AF7F', 3],
-  [15, '#62C67F', 2.5],
-  [10, '#88DC7C', 2],
-  [0, '#B2F277', 1.5]
+  [40, "#10525A", 5],
+  [35, "#096869", 4.5],
+  [30, "#0D8074", 4],
+  [25, "#23977C", 3.5],
+  [20, "#40AF7F", 3],
+  [15, "#62C67F", 2.5],
+  [10, "#88DC7C", 2],
+  [0, "#B2F277", 1.5]
 ];
 
 function initialize() {
-  document.body.classList.remove('loading');
+  document.body.classList.remove("loading");
 
-  map.addSource('trees', {
-    type: 'geojson',
+  var labelLayers = map.getStyle().layers;
+    // Find the index of the first symbol layer in the map style
+    var firstSymbolId;
+    for (var i = 0; i < layers.length; i++) {
+        if (layers[i].type === 'symbol') {
+            firstSymbolId = layers[i].id;
+            break;
+        }
+    }
+  map.addSource("trees", {
+    type: "geojson",
     data: {
-      type: 'FeatureCollection',
+      type: "FeatureCollection",
       features: []
     }
   });
 
-  map.addSource('geojson', {
-    type: 'geojson',
+  map.addSource("geojson", {
+    type: "geojson",
     data: {
-      type: 'FeatureCollection',
+      type: "FeatureCollection",
       features: []
     }
   });
 
   // Polygon style
-  map.addLayer({
-    id: 'polygon-query-fill',
-    type: 'fill',
-    source: 'geojson',
-    paint: {
-      'fill-color': '#027dbd',
-      'fill-opacity': 0.05
-    }
-  }, 'place_label_neighborhood');
+  map.addLayer(
+    {
+      id: "polygon-query-fill",
+      type: "fill",
+      source: "geojson",
+      paint: {
+        "fill-color": "#027dbd",
+        "fill-opacity": 0.05
+      }
+    },
+    firstSymbolId
+  );
 
-  map.addLayer({
-    id: 'polygon-query-line',
-    type: 'line',
-    source: 'geojson',
-    paint: {
-      'line-color': '#027dbd',
-      'line-width': 2
-    }
-  }, 'place_label_neighborhood');
+  map.addLayer(
+    {
+      id: "polygon-query-line",
+      type: "line",
+      source: "geojson",
+      paint: {
+        "line-color": "#027dbd",
+        "line-width": 2
+      }
+    },
+    firstSymbolId
+  );
 
   // Tree markers
   layers.forEach(function(layer, i) {
-    map.addLayer({
-      id: 'tree-markers-' + i,
-      type: 'circle',
-      source: 'trees',
-      interactive: true,
-      paint: {
-        'circle-color': layer[1],
-        'circle-radius': layer[2],
-        'circle-opacity': 0.75
+    map.addLayer(
+      {
+        id: "tree-markers-" + i,
+        type: "circle",
+        source: "trees",
+        interactive: true,
+        paint: {
+          "circle-color": layer[1],
+          "circle-radius": layer[2],
+          "circle-opacity": 0.75
+        },
+        filter:
+          i == 0
+            ? [">=", "diameter", layer[0]]
+            : [
+                "all",
+                [">=", "diameter", layer[0]],
+                ["<", "diameter", layers[i - 1][0]]
+              ]
       },
-      filter: i == 0 ?
-        ['>=', 'diameter', layer[0]] :
-        ['all',
-            ['>=', 'diameter', layer[0]],
-            ['<', 'diameter', layers[i - 1][0]]]
-    }, 'place_label_neighborhood');
+      firstSymbolId
+    );
   });
 
   // Set the draw canvas to the same width+height as the map.
-  drawCanvas.setAttribute('width', map.getCanvas().offsetWidth);
-  drawCanvas.setAttribute('height', map.getCanvas().offsetHeight);
+  drawCanvas.setAttribute("width", map.getCanvas().offsetWidth);
+  drawCanvas.setAttribute("height", map.getCanvas().offsetHeight);
 
   // Add the draw control to the map
-  draw = document.createElement('button');
-  draw.id = 'draw';
-  draw.className = 'icon pencil button round-right draw-ctrl';
-  draw.title = 'Draw';
+  draw = document.createElement("button");
+  draw.id = "draw";
+  draw.className = "icon pencil button round-right draw-ctrl";
+  draw.title = "Draw";
 
   function enableDraw() {
-    draw.classList.add('active');
-    drawCanvas.classList.remove('hidden');
-    drawCanvas.style.cursor = 'crosshair';
+    draw.classList.add("active");
+    drawCanvas.classList.remove("hidden");
+    drawCanvas.style.cursor = "crosshair";
     pencil.enable();
   }
 
-  draw.addEventListener('click', function(e) {
+  draw.addEventListener("click", function(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    if (draw.classList.contains('active')) {
+    if (draw.classList.contains("active")) {
       disableDraw();
     } else {
       enableDraw();
@@ -148,29 +169,30 @@ function initialize() {
 
   drawControls.appendChild(draw);
 
-  if (window.location.search.indexOf('overlay') !== -1) {
-    var initialOverlay = document.createElement('div');
-    initialOverlay.className = 'pin-top pin-bottom col12 fill-darken2 z100 dark initial-overlay';
-    var title = document.createElement('h3');
-    title.textContent = 'Click to begin drawing';
-    title.className = 'fancy inline';
+  if (window.location.search.indexOf("overlay") !== -1) {
+    var initialOverlay = document.createElement("div");
+    initialOverlay.className =
+      "pin-top pin-bottom col12 fill-darken2 z100 dark initial-overlay";
+    var title = document.createElement("h3");
+    title.textContent = "Click to begin drawing";
+    title.className = "fancy inline";
 
     initialOverlay.appendChild(title);
     document.body.appendChild(initialOverlay);
 
-    initialOverlay.addEventListener('click', function() {
-      initialOverlay.classList.add('hidden');
+    initialOverlay.addEventListener("click", function() {
+      initialOverlay.classList.add("hidden");
       map.zoomTo(12.25);
       enableDraw();
     });
   }
 
-  pencil.on('result', function(e) {
+  pencil.on("result", function(e) {
     var feature = {
-      type: 'Feature',
+      type: "Feature",
       properties: {},
       geometry: {
-        type: 'Polygon',
+        type: "Polygon",
         coordinates: [[]]
       }
     };
@@ -196,71 +218,76 @@ function initialize() {
 
 function redraw(feature) {
   var geojson = {
-    type: 'FeatureCollection',
+    type: "FeatureCollection",
     features: feature ? [feature] : []
   };
 
   // Grab all the features and draw them as polygons on the map
-  map.getSource('geojson').setData(geojson);
+  map.getSource("geojson").setData(geojson);
 
   // Is there tree data within the drawn features?
   var within = feature ? turfWithin(trees, geojson) : geojson;
 
   // Add to map
-  map.getSource('trees').setData(within);
+  map.getSource("trees").setData(within);
 
   // Build aggregation
-  aggregateContainer.innerHTML = '';
+  aggregateContainer.innerHTML = "";
   if (within.features.length) {
-    var count = document.createElement('strong');
-    count.className = 'block space-bottom1';
-    count.textContent = within.features.length.toLocaleString() + ' trees selected';
+    var count = document.createElement("strong");
+    count.className = "block space-bottom1";
+    count.textContent =
+      within.features.length.toLocaleString() + " trees selected";
     aggregateContainer.appendChild(count);
 
-    var aggregates = [{
-      label: 'Tree diameter',
-      range: ['#b2f277', '#10525a'],
-      aggregate: groupBy(within.features, function(d) {
-        var diameter = d.properties.diameter + 'in';
-        if (!diameter) diameter = 'UNKNOWN';
-        return diameter;
-      })
-    }, {
-      label: 'Condition',
-      aggregate: groupBy(within.features, function(d) {
-        var condition = d.properties.condition;
-        if (!condition) {
-          condition = 'UNKNOWN';
-        } else {
-          conditions.forEach(function(d) {
-            condition = condition === d.code ? d.description : condition;
-          });
-        }
-        return condition;
-      })
-    }, {
-      label: 'Species',
-      aggregate: groupBy(within.features, function(d) {
-        var species = d.properties.species;
-        if (!species || species === '0') {
-          species = 'UNKNOWN';
-        } else {
-          codes.forEach(function(code) {
-            species = species === code.code ? code.name : species;
-          });
-        }
-        return species;
-      })
-    }];
+    var aggregates = [
+      {
+        label: "Tree diameter",
+        range: ["#b2f277", "#10525a"],
+        aggregate: groupBy(within.features, function(d) {
+          var diameter = d.properties.diameter + "in";
+          if (!diameter) diameter = "UNKNOWN";
+          return diameter;
+        })
+      },
+      {
+        label: "Condition",
+        aggregate: groupBy(within.features, function(d) {
+          var condition = d.properties.condition;
+          if (!condition) {
+            condition = "UNKNOWN";
+          } else {
+            conditions.forEach(function(d) {
+              condition = condition === d.code ? d.description : condition;
+            });
+          }
+          return condition;
+        })
+      },
+      {
+        label: "Species",
+        aggregate: groupBy(within.features, function(d) {
+          var species = d.properties.species;
+          if (!species || species === "0") {
+            species = "UNKNOWN";
+          } else {
+            codes.forEach(function(code) {
+              species = species === code.code ? code.name : species;
+            });
+          }
+          return species;
+        })
+      }
+    ];
 
     aggregates.forEach(function(d) {
-      var label = document.createElement('strong');
-      label.className = 'block space-bottom0 quiet small strong';
+      var label = document.createElement("strong");
+      label.className = "block space-bottom0 quiet small strong";
       label.textContent = d.label;
       aggregateContainer.appendChild(label);
 
-      var barContainer = document.createElement('div');
-      barContainer.className = 'clearfix col12 space-bottom1 dark contain';
+      var barContainer = document.createElement("div");
+      barContainer.className = "clearfix col12 space-bottom1 dark contain";
 
       if (d.range) {
         var keys = Object.keys(d.aggregate).length;
@@ -269,17 +296,20 @@ function redraw(feature) {
       }
 
       for (var prop in d.aggregate) {
-        var bar = document.createElement('div');
-        bar.className = 'fl bar fill-blue pad0y';
+        var bar = document.createElement("div");
+        bar.className = "fl bar fill-blue pad0y";
 
-        var percentage = (d.aggregate[prop].length / within.features.length) * 100;
-        percentage = percentage < 1 ? percentage.toFixed(1) : Math.floor(percentage);
+        var percentage =
+          (d.aggregate[prop].length / within.features.length) * 100;
+        percentage =
+          percentage < 1 ? percentage.toFixed(1) : Math.floor(percentage);
 
-        bar.style.width = percentage + '%';
-        if (d.range) bar.style.backgroundColor = prop === 'UNKNOWN' ?
-            '#666' : range[index];
-        var tooltip = prop + ' (' + percentage + '%)';
-        bar.setAttribute('data-tooltip', tooltip.toLowerCase());
+        bar.style.width = percentage + "%";
+        if (d.range)
+          bar.style.backgroundColor =
+            prop === "UNKNOWN" ? "#666" : range[index];
+        var tooltip = prop + " (" + percentage + "%)";
+        bar.setAttribute("data-tooltip", tooltip.toLowerCase());
         barContainer.appendChild(bar);
         index++;
       }
@@ -292,10 +322,11 @@ function redraw(feature) {
 
   if (feature && !clearSelection) {
     // Add remove selection link
-    clearSelection = document.createElement('button');
-    clearSelection.className = 'dark button round-left pad2x draw-ctrl keyline-right';
-    clearSelection.textContent = 'Clear selection';
-    clearSelection.addEventListener('click', function(e) {
+    clearSelection = document.createElement("button");
+    clearSelection.className =
+      "dark button round-left pad2x draw-ctrl keyline-right";
+    clearSelection.textContent = "Clear selection";
+    clearSelection.addEventListener("click", function(e) {
       e.preventDefault();
       e.stopPropagation();
       redraw();
@@ -308,45 +339,45 @@ function redraw(feature) {
     clearSelection = null;
   }
 
-  legend.classList.toggle('hidden', !feature);
+  legend.classList.toggle("hidden", !feature);
 }
 
 function disableDraw() {
   if (!draw) return;
-  draw.classList.remove('active');
-  drawCanvas.classList.add('hidden');
-  drawCanvas.style.cursor = '';
+  draw.classList.remove("active");
+  drawCanvas.classList.add("hidden");
+  drawCanvas.style.cursor = "";
   pencil.disable().clear();
   popup.remove();
 }
 
 function buildLegend() {
-  var title = document.createElement('h4');
-  title.className = 'block space-bottom0';
-  title.textContent = 'Tree diameter';
-  var list = document.createElement('div');
+  var title = document.createElement("h4");
+  title.className = "block space-bottom0";
+  title.textContent = "Tree diameter";
+  var list = document.createElement("div");
 
   layers.reverse().forEach(function(layer, i) {
-    var item = document.createElement('div');
-    item.className = 'inline dot';
-    if (i !== 0) item.classList.add('space-left0');
+    var item = document.createElement("div");
+    item.className = "inline dot";
+    if (i !== 0) item.classList.add("space-left0");
     item.style.backgroundColor = layer[1];
-    item.style.width = layer[2] * 2 + 'px';
-    item.style.height = layer[2] * 2 + 'px';
+    item.style.width = layer[2] * 2 + "px";
+    item.style.height = layer[2] * 2 + "px";
     list.appendChild(item);
   });
 
-  var key = document.createElement('div');
-  key.className = 'mobile-cols clearfix micro';
+  var key = document.createElement("div");
+  key.className = "mobile-cols clearfix micro";
 
-  var start = document.createElement('div');
-  start.className = 'col6';
-  start.textContent = layers[0][0] + 'in';
+  var start = document.createElement("div");
+  start.className = "col6";
+  start.textContent = layers[0][0] + "in";
   key.appendChild(start);
 
-  var end = document.createElement('div');
-  end.className = 'col6 text-right';
-  end.textContent = layers[layers.length - 1][0] + 'in';
+  var end = document.createElement("div");
+  end.className = "col6 text-right";
+  end.textContent = layers[layers.length - 1][0] + "in";
   key.appendChild(end);
 
   legend.appendChild(title);
@@ -354,15 +385,15 @@ function buildLegend() {
   legend.appendChild(key);
 }
 
-map.on('mousemove', function(e) {
+map.on("mousemove", function(e) {
   var features = map.queryRenderedFeatures(e.point, {
     layers: layers.map(function(layer, i) {
-      return 'tree-markers-' + i;
+      return "tree-markers-" + i;
     })
   });
 
   // Change the cursor style as a UI indicator.
-  map.getCanvas().style.cursor = features.length ? 'pointer' : '';
+  map.getCanvas().style.cursor = features.length ? "pointer" : "";
 
   if (!features.length) {
     popup.remove();
@@ -371,7 +402,7 @@ map.on('mousemove', function(e) {
 
   var feature = features[0];
   var p = feature.properties;
-  var popupContainer = document.createElement('div');
+  var popupContainer = document.createElement("div");
 
   // Look up species code for proper name
   codes.forEach(function(code) {
@@ -380,21 +411,22 @@ map.on('mousemove', function(e) {
 
   // Look up condition for description
   conditions.forEach(function(condition) {
-    p.condition = p.condition === condition.code ? condition.description : p.condition;
+    p.condition =
+      p.condition === condition.code ? condition.description : p.condition;
   });
 
   [
-    ['Species', p.species.toLowerCase()],
-    ['Condition', p.condition],
-    ['Diameter', p.diameter + 'in']
+    ["Species", p.species.toLowerCase()],
+    ["Condition", p.condition],
+    ["Diameter", p.diameter + "in"]
   ].forEach(function(d) {
-    var item = document.createElement('div');
-    var label = document.createElement('strong');
-    label.className = 'space-right0';
+    var item = document.createElement("div");
+    var label = document.createElement("strong");
+    label.className = "space-right0";
     label.textContent = d[0];
 
-    var value = document.createElement('div');
-    value.className = 'inline capitalize';
+    var value = document.createElement("div");
+    value.className = "inline capitalize";
     value.textContent = d[1];
 
     item.appendChild(label);
@@ -404,9 +436,10 @@ map.on('mousemove', function(e) {
 
   // Initialize a popup and set its coordinates
   // based on the feature found.
-  popup.setLngLat(feature.geometry.coordinates)
+  popup
+    .setLngLat(feature.geometry.coordinates)
     .setHTML(popupContainer.innerHTML)
     .addTo(map);
 });
 
-map.on('load', initialize);
+map.on("load", initialize);
